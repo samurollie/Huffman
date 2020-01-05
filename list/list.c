@@ -1,3 +1,3 @@
-#include "huff_trees.h"
+#include "list.h"
 
 // Código das funções
