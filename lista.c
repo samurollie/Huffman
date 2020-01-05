@@ -1,13 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "list/list.h"
 
 typedef long long int lli;
-
-typedef struct node{
-    int item;
-    struct node *next, *right, *left;
-}node;
 
 lli *get_frequency(FILE *file) {
     lli *repeticao = (lli*) malloc(sizeof(lli) * 256);
@@ -25,26 +21,11 @@ FILE *open_file(char* path) {
     return f;
 }
 
-void print_list(node *head){
-    while(head != NULL){
-        printf("%d | ", head -> item);
-        head = head -> next;
-    }
-}
-
-node *add(node *head, int item){
-    node new_node = (node) malloc(sizeof(node));
-    new_node -> item = item; 
-    new_node -> next = head;
-    new_node -> right = NULL;
-    new_node -> left = NULL;
-    return new_node;
-}
-
 int main() {
     FILE *arq; 
     arq = open_file("a.txt");
     lli *frequency = get_frequency(arq);
+    
     node *head = NULL;
     int i, size_list = 0;
     for (i = 0; i < 256; i++) {
@@ -54,5 +35,6 @@ int main() {
         }
     }
     print_list(head);
+    
     return 0;
 }
