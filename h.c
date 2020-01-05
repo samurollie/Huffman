@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-    FILE *arq;
+    FILE *arq; 
     arq = fopen("a.JPG", "r");
     fseek(arq, 0, SEEK_END);
     /* A função fseek percorre todo o arq até o final (seek_end) partindo
