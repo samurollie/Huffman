@@ -14,7 +14,5 @@ int main() {
     representando o tamanho do arquivo. */ 
     printf("O tamanho do arquivo é: %ld bytes.\n", tam);
     fclose(arq); // fecha o arquivo.
-    // unsigned int array;
-
     return 0;
 }
