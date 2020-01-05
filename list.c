@@ -33,9 +33,11 @@ void print_list(node *head){
 }
 
 node *add(node *head, int item){
-    node *new_node = (node*) malloc(sizeof(node));
+    node new_node = (node) malloc(sizeof(node));
     new_node -> item = item; 
     new_node -> next = head;
+    new_node -> right = NULL;
+    new_node -> left = NULL;
     return new_node;
 }
 
