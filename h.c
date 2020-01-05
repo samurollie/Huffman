@@ -3,13 +3,14 @@
 
 int main() {
     FILE *arq; 
-    arq = fopen("a.JPG", "r");
+    arq = fopen("a.txt", "r");
     unsigned char inut;
     long long int repeticao[256] = {0};
     int i;
 	while (!feof(arq)) { // vai até o EOF.
   		fscanf(arq,"%c",&inut);
-        int a = inut - '0';
+        int a = (int) inut;
+        // printf ("%d\n", a);
         repeticao[a] += 1;
   	}
 //     for(i = 0; i < 256; i++) {
