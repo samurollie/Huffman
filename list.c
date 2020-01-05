@@ -6,7 +6,7 @@ typedef long long int lli;
 
 typedef struct node{
     int item;
-    struct node *next;
+    struct node *next, *right, *left;
 }node;
 
 lli *get_frequency(FILE *file) {
