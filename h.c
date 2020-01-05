@@ -7,8 +7,8 @@ lli *get_frequency(FILE *file) {
     lli repeticao[256] = {0};
     unsigned char unit;
 	while (fscanf(file,"%c",&unit) != EOF) { // vai até o EOF.
-        int a = (int) unit;
-        repeticao[a] += 1;
+		int a = (int) unit;
+		repeticao[a] += 1;
   	}
     return repeticao;
 }
