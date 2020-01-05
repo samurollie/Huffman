@@ -4,15 +4,18 @@
 int main() {
     FILE *arq; 
     arq = fopen("a.JPG", "r");
-    fseek(arq, 0, SEEK_END);
-    /* A função fseek percorre todo o arq até o final (seek_end) partindo
-    de um contador que se inicia como ZERO. */
-    long tam = ftell(arq); 
-    /* ftell informa a posição atual do ponteiro interno, como a função fseek
-    vai até o final do arquivo, quando acabar, o ponteiro estará
-    apontando para a ultima posição do arquivo, ou seja, o ponteiro estará
-    representando o tamanho do arquivo. */ 
-    printf("O tamanho do arquivo é: %ld bytes.\n", tam);
-    fclose(arq); // fecha o arquivo.
+    unsigned char inut;
+    long long int repeticao[256] = {0};
+    int i;
+	while (!feof(arq)) { // vai até o EOF.
+  		fscanf(arq,"%c",&inut);
+        int a = inut - '0';
+        repeticao[a] += 1;
+  	}
+//     for(i = 0; i < 256; i++) {
+//         if(repeticao[i] != 0) {
+//             printf(">>>%lld\n", repeticao[i]);
+//         }
+//     }
     return 0;
 }
