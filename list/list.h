@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef long long int lli;
+
 typedef struct node node;
 struct node {
-    unsigned char item;
+    void* item;
     int frequency;
     node* left;
     node* right;
@@ -15,7 +17,7 @@ struct node {
 
 void print_list (node *head);
 
-node *add(node *head, int item);
+node *add(node *head, void* item, lli frequency);
 
 node* create_list();
 

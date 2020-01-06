@@ -9,9 +9,10 @@ void print_list (node *head) {
     printf ("\n");
 }
 
-node *add(node *head, int item){
+node *add (node *head, void* item, lli frequency){
     node *new_node = (node*) malloc(sizeof(node));
     new_node -> item = item; 
+    new_node -> frequency = frequency;
     new_node -> next = head;
     new_node -> right = NULL;
     new_node -> left = NULL;
