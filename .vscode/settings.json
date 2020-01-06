@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "list.h": "c"
+        "list.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "cstdio": "c",
+        "hash.h": "c"
     }
 }
