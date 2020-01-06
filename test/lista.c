@@ -5,6 +5,7 @@
 
 typedef long long int lli;
 typedef struct node node;
+typedef struct list list;
 
 struct node {
     unsigned char item;
@@ -12,6 +13,11 @@ struct node {
     node* left;
     node* right;
     node* next;
+};
+
+struct list { //:)
+	node* head;
+  int size;
 };
 
 void print_list (node *head) {
@@ -23,37 +29,36 @@ void print_list (node *head) {
     printf ("\n");
 }
 
-void insert (node* new_node, node* head) {
-    if (head == NULL) { // Se a lista estiver vazia
-        new_node->next = head;
-    } else {
-        node *aux = head;
-        node *previous = NULL;
-        while(aux != NULL && aux->frequency < new_node->frequency) {
-            previous = aux;
-            aux = aux->next;
-        }
-        if (previous == NULL) { // Se previous continuar valendo NULL, significa que eu desejo adicionar um valor na cabeça da lista;
-            new_node->next = aux;
-        } else {
-            previous->next = new_node;
-            new_node->next = aux;
-        }
+void insert(list* list, node* new_node) {
+  if(list->size == 0 || new_node->frequency < list->head->frequency) {
+    new_node->next = list->head;
+    list->head = new_node;
+  } else {
+		node* aux = list->head;
+    while (aux->next != NULL && aux->next->frequency < new_node->frequency) {
+			aux = aux->next;
     }
+    new_node->next = aux->next;
+    aux->next = new_node;
+  }
+  list->size++;
 }
 
-node *add (node *head, unsigned char item, lli frequency){
+list *add (list *list, unsigned char item, lli frequency){ //create
     node *new_node = (node*) malloc(sizeof(node));
     new_node -> item = item; 
     new_node -> frequency = frequency;
     new_node -> right = NULL;
     new_node -> left = NULL;
-    insert(new_node, head);
-    return new_node;
+    insert(list, new_node);
+    return list;
 }
 
-node* create_list() {
-    return NULL;
+list* create_list() {
+    list *new_list = (list*) malloc(sizeof(list));
+    new_list->head = NULL;
+    new_list->size = 0;
+    return new_list;
 }
 
 lli *get_frequency(FILE *file) {
@@ -77,15 +82,15 @@ int main() {
     arq = open_file("../a.txt");
     lli *frequency = get_frequency(arq);
     
-    node *head = NULL;
+    list *list = create_list();
     int i, size_list = 0;
     for (i = 0; i < 256; i++) {
         if (frequency[i] != 0) {
-            head = add(head, 'a',frequency[i]);
+            list = add(list, 'a',frequency[i]);
             size_list++;
         }
     }
-    print_list(head);
+    print_list(list->head);
     
     return 0;
 }
