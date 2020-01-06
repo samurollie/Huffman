@@ -5,20 +5,28 @@
 #include <stdlib.h>
 
 typedef long long int lli;
-
 typedef struct node node;
+typedef struct list list;
+
 struct node {
-    void* item;
+    unsigned char item;
     int frequency;
     node* left;
     node* right;
     node* next;
 };
 
+struct list {
+	node* head;
+    int size;
+};
+
 void print_list (node *head);
 
-node *add(node *head, void* item, lli frequency);
+void insert(list* list, node* new_node);
 
-node* create_list();
+list *add (list *list, unsigned char item, lli frequency);
+
+list* create_list();
 
 #endif

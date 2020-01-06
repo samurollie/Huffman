@@ -23,8 +23,10 @@ void print_linked_list (hash_node* head) {
 // Imprime uma hash table;
 void print_hash_table(hash_table *ht) {
     for (int i = 0; i < HASH_SIZE; i++) {
-        printf("Posicao %d: ", i);
-        print_linked_list(ht->table[i]);
+        if (ht->table[i] != NULL) {
+            printf("Posicao %d: ", i);
+            print_linked_list(ht->table[i]);
+        }
     }
 }
 
