@@ -30,18 +30,18 @@ void print_list (node *head) {
 }
 
 void insert(list* list, node* new_node) {
-  if(list->size == 0 || new_node->frequency < list->head->frequency) {
-    new_node->next = list->head;
-    list->head = new_node;
-  } else {
-		node* aux = list->head;
-    while (aux->next != NULL && aux->next->frequency < new_node->frequency) {
-			aux = aux->next;
+    if(list->size == 0 || new_node->frequency < list->head->frequency) {
+        new_node->next = list->head;
+        list->head = new_node;
+    } else {
+        node* aux = list->head;
+        while (aux->next != NULL && aux->next->frequency < new_node->frequency) {
+            aux = aux->next;
+        }
+        new_node->next = aux->next;
+        aux->next = new_node;
     }
-    new_node->next = aux->next;
-    aux->next = new_node;
-  }
-  list->size++;
+    list->size++;
 }
 
 list *add (list *list, unsigned char item, lli frequency){ //create
