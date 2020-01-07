@@ -21,7 +21,7 @@ struct arvore {
   unsigned char item;
   node *left;
   node *right;
-}
+};
 
 struct list { //:)
 	node* head;
