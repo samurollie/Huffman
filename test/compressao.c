@@ -2,11 +2,21 @@
 #include "../hash/hash.h"
 #include <string.h>
 
-void remove_head(list* list) {
-  node* aux = list->head;
-  list->head = aux->next;
+/*void remove_head(list* list) {
+  node* aux = NULL;
+  aux = list->head;
+  list->head = aux->next; //hmm, o correto seria fazer oq?
   free(aux); 
   list->size--; 
+}*/
+
+void print_tree (node* tree) {
+	if(tree ==  NULL) {
+		return;
+	}
+	printf("Caracter: %c, frequencia: %d\n", tree->item, tree->frequency);
+	print_tree(tree->left);
+	print_tree(tree->right);
 }
 
 node *create_node(node *head, lli frequency, unsigned char item, list *list){
@@ -15,6 +25,8 @@ node *create_node(node *head, lli frequency, unsigned char item, list *list){
   new_node->item = item;
   new_node->left = list->head;
   new_node->right = list->head->next;
+  new_node->left->next = NULL;
+  new_node->right->next = NULL;
   new_node->next = NULL;
   return new_node;
 }
@@ -25,19 +37,19 @@ node* join(list* list) {
     lli frequency = list->head->frequency + list->head->next->frequency; // Soma a frequencia dos dois primeiros nós da lista;
     unsigned char id = '*'; // O item que eu devo salvar pra indicar que é um nó interno
   	father = create_node(father, frequency, id, list); // Adiciono tudo ao novo nó;
-    father->next = father->right->next;
-  	remove_head(list);
-  	remove_head(list);
- 		return father;
+  	list->size--; 
+  	list->size--; 
+  	return father;
 } 
 
 // Constroi a árvore de Huffman
-list* build_tree (list *mylist) {
-  list* huff_tree = create_list(); 
-  while(mylist->size >= 1) { 
+node* build_tree (list *mylist) {
+  while(mylist->size > 0) { 
   	node* father = join(mylist);
+	print_list(mylist->head);
   	insert(mylist, father);
   }
+  node *huff_tree = mylist->head;
   return huff_tree;
 }
 
@@ -61,7 +73,11 @@ FILE *open_file(char* path) {
 int main() {
     FILE *arq; 
     arq = open_file("../a.txt");
-    hash_table* mapping = create_hash_table();
+    if (arq == NULL) {
+			printf ("Arquivo não encontrado\n");
+      return 0;
+    }
+  	hash_table* mapping = create_hash_table();
     get_frequency(arq, mapping);
     print_hash_table(mapping);
 
@@ -73,7 +89,7 @@ int main() {
     }
     print_list(mylist->head);
     
-    list *huff_tree = build_tree(mylist);
-    printf("%d\n", huff_tree->head->frequency);
+    node *huff_tree = build_tree(mylist);
+    print_tree(huff_tree);
     return 0;
 }

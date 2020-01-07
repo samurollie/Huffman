@@ -3,7 +3,7 @@
 void print_list (node *head) {
     node* aux = head;
     while(aux != NULL){
-        printf("%d ", aux->frequency);
+        printf("%c -> %d, ", aux->item, aux->frequency);
         aux = aux -> next;
     }
     printf ("\n");
