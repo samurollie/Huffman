@@ -49,7 +49,7 @@ int main() {
     if (compressed_file ==  NULL) {
       printf ("Não foi possível comprimir o arquivo\n");
     }
-
+    
     print_on_file(compressed_file, huff_tree);
     return 0;
 }
