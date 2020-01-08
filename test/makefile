@@ -3,4 +3,4 @@ SRC := ../hash/hash.c ../list/list.c
 MAIN := compressao.c
 
 compile:
-	gcc $(HEADERS) $(SRC) $(MAIN) -O3 -o a.out -lm -Wall
+	gcc $(HEADERS) $(SRC) $(MAIN) -o a.out -lm -Wall
