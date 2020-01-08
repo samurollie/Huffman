@@ -15,6 +15,7 @@ struct hash_node {
     hash_node* next;
     unsigned char key;
     lli frequency;
+    int* new_mapping;
 };
 
 struct hash_table {
