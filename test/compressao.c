@@ -4,13 +4,13 @@
 #include <string.h>
 
 unsigned char set_bit(unsigned char c, int i) { // essa função transforma o zero em um.
-	  unsigned char mask = 1 << i;	
-	  return mask | c;
+    unsigned char mask = 1 << i;	
+    return mask | c;
 }
 
 int is_bit_i_set(unsigned char c, int i) { // verifica se o int i é igual a um.
-	  unsigned char mask = 1 << i;
-	  return mask & c;
+    unsigned char mask = 1 << i;
+    return mask & c;
 }
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
@@ -31,10 +31,12 @@ void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* f
 }
 
 void dec_to_bin(int beggin, int rest, int array[], int i) { // passar resto = 0;
-  if(beggin >= 2) { // ?????????? ke???
+  if(beggin >= 1) { // ?????????? ke???
     rest = beggin % 2;
     beggin = beggin / 2;
+    // printf ("i ::: %d\n", i);
     dec_to_bin(beggin, 0, array, i++);
+    printf ("%d", rest);
     array[i] = rest;
   }
 }
@@ -105,7 +107,7 @@ int main() {
     FILE *arq; 
     arq = open_file(file_path);
     if (arq == NULL) {
-			printf ("Arquivo não encontrado\n");
+        printf ("Arquivo não encontrado\n");
       return 0;
     }
   	hash_table* mapping = create_hash_table();
@@ -136,29 +138,42 @@ int main() {
           	unsigned char item = mapping->table[i]->key;
           	int found = 0;
 		  	search_huff_tree(huff_tree, item, path, 0, &found);	
-            /* // array path = 1 0 1 -1 -1 -1 -1 -1 
-          	// unsigned char = 0 0 0 0 0 0 0 0
-          	// após chamar a função set_bit, unsigned char = 0 0 0 0 0 1 0 1 :::: Deve ser printado no arquivo.
-          	unsigned char c = 0;
-          	for (int j = 0; j < 8; j++) {
-				if (path[j] == 1) {
-					c = set_bit(c, j); //mudando os bits pra 1 de acordo com o mapeamento do array.
-                }
-            } */
-          	//salvando o que vai ser ptintado na hash table
-          	mapping->table[i]->new_mapping = path;
+          	printf ("O caminho para o %c: ", item);
+            for (int x = 0; x < 8; x++) {
+                printf ("%d ", path[x]);
+            }
+            printf ("\n");
+            mapping->table[i]->new_mapping = path;
         }
     }
+
   	//agora vamos escrever todos os bytes no arquivo, bit a bit;
   	int tree_size = 0;
   	get_number_of_nodes(huff_tree, &tree_size);
-  	int trash_size = tree_size - 16;
+  	printf ("Tamanho da árvore: %d\n", tree_size);
+
+    int trash_size = 16 - tree_size;
+    printf("Tamanho do lixo: %d\n", trash_size);
+
   	int array[16];
   	memset(array, 0, sizeof(array));
+    
+    printf ("Tamanho da árvore em binario: ");
   	dec_to_bin(tree_size, 0, array, 0);
+    printf ("\n");
+    
+    printf ("Tamanho do lixo em binario: ");
   	dec_to_bin(trash_size, 0, array, 13);
+    printf ("\n");
   	
-  	unsigned char c = 0, d = 0;	
+    printf("Primeiros bits do arquivo: ");
+    for (int i = 0; i < 16; i++) {
+        if (i == 8) printf(" ");
+        printf ("%d", array[i]);
+    }
+    printf ("\n");
+  	
+      unsigned char c = 0, d = 0;	
   	for (int i = 0; i < 16; i++) {
 		if (i < 8) { // Salvo em um dos bytes;
 			if (array[i] == 1) {
