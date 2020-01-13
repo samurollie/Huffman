@@ -13,10 +13,6 @@ int is_bit_i_set(unsigned char c, int i) { // verifica se o int i é igual a um.
     return mask & c;
 }
 
-int is_leaf(node *tree) {
-  return !tree->left && !tree->right;
-}
-
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
       	return;
@@ -49,7 +45,7 @@ void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós
 	if (tree == NULL) {
 		return;
     }
-  	if ( is_leaf(tree) == 1 && (tree -> item == '*' || tree -> item == '\\' )) {
+  	if (is_leaf(tree) == 1 && (tree -> item == '*' || tree -> item == '\\')) {
       	(*size)++;
     }
     (*size)++;

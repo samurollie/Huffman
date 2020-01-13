@@ -5,6 +5,7 @@
         "stdlib.h": "c",
         "stdio.h": "c",
         "cstdio": "c",
-        "hash.h": "c"
+        "hash.h": "c",
+        "huff_tree.h": "c"
     }
 }

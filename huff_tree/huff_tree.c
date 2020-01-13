@@ -1,5 +1,9 @@
 #include "huff_tree.h"
 
+int is_leaf(node *tree) {
+  return !tree->left && !tree->right;
+}
+
 void print_tree (node* tree) {
 	if(tree ==  NULL) {
 		return;
@@ -13,7 +17,15 @@ void print_on_file (FILE *f, node* tree) {
 	if (tree == NULL) {
 		return;
     }
-  	fprintf(f, "%c", tree->item);
+	if (is_leaf(tree)) {
+		if (tree->item == '*' || tree->item == '\\') {
+  			fprintf(f, "\\%c", tree->item);
+		} else {
+  			fprintf(f, "%c", tree->item);
+		}
+	} else {
+  		fprintf(f, "%c", tree->item);
+	}
   	print_on_file(f, tree->left);
   	print_on_file(f, tree->right);
 }

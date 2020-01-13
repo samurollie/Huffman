@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "../list/list.h"
 
+int is_leaf(node *tree);
 void print_tree (node* tree);
 void print_on_file (FILE *f, node* tree);
 node *create_node(node *head, lli frequency, unsigned char item, list *list);
