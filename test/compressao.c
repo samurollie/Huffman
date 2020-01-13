@@ -13,10 +13,14 @@ int is_bit_i_set(unsigned char c, int i) { // verifica se o int i é igual a um.
     return mask & c;
 }
 
+int is_leaf(node *tree) {
+  return !tree->left && !tree->right;
+}
+
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
       	return;
-    } else if (tree->item == item) {
+    } else if (is_leaf(tree) && tree->item == item) {
       *found = 1;
 		return;
     }
@@ -39,10 +43,6 @@ void dec_to_bin(int beggin, int rest, int array[], int i) { // passar resto = 0;
     	printf ("%d", rest);
     	array[i] = rest;
 	}
-}
-
-int is_leaf(node *tree) {
-  return !tree->left && !tree->right;
 }
 
 void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós da arvore.
@@ -85,6 +85,7 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping) {
 					c = set_bit(c, j); //mudando os bits pra 1 de acordo com o mapeamento do array.
                 }
             }
+          i = 0;
           	fprintf(compressed_file, "%c", c);
         }
   	}
@@ -185,12 +186,12 @@ int main() {
   	dec_to_bin(trash_size, 0, array, 13);
     printf ("\n");
   	
-    printf("Primeiros bits do arquivo: ");
+    // printf("Primeiros bits do arquivo: ");
     /* for (int i = 1;  < 16; i++) {
         if (i == 8) printf(" ");
         printf ("%d", array[i]);
     } */
-    printf ("\n");
+    // printf ("\n");
   	
     unsigned char c = 0, d = 0;
   	for (int i = 16 - 1; i >= 0; i--) {
@@ -208,7 +209,10 @@ int main() {
   	fprintf(compressed_file, "%c", c);
   	fprintf(compressed_file, "%c", d);
     print_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
-	print_bits(arq, compressed_file, mapping); 
+	
+    fclose(arq);
+    arq = open_file(file_path);
+    print_bits(arq, compressed_file, mapping); 
   
     return 0;
 }
