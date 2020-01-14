@@ -63,28 +63,47 @@ int changed_positions(int array[], int size) {
 	return total;
 }
 
-void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping) {
+void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int trash_size) {
 	unsigned char unit;
   	int aux[8], i = 0;
     memset(aux, -1, sizeof(aux));
-  	while (fscanf(file,"%c",&unit) != EOF) {
-        printf("AQUI\n");
+  
+  	while (fscanf(file, "%c", &unit) != EOF) {
 		int h = (int) unit;
-      	int n = changed_positions(mapping->table[h]->new_mapping, 8);
-      	for (int j = 0; j < n; j++, i++) {
+      	int n = changed_positions(mapping->table[h]->new_mapping, 8); //para ver o tamanho no novo mapeamento
+      	
+      	for (int j = 0; j < n && i < 8; j++, i++) { //vai salvando no array auxiliar até formar um byte (necessariamente)
 			aux[i] = mapping->table[h]->new_mapping[j];
         }
-      	if (i == 8) {
-            unsigned char c = 0;
+        // printf("valor do i: %d\n", i);
+      	
+      	if (i == 8) { // Se ja formou um byte; de 0 até 8 - 1
+          // printf ("AQUI\n");  
+          unsigned char c = 0; //zera todas as posições 
           	for (int j = 0; j < 8; j++) {
 				if (aux[j] == 1) {
 					c = set_bit(c, j); //mudando os bits pra 1 de acordo com o mapeamento do array.
                 }
             }
+          
+          fprintf(compressed_file, "%c", c);
           i = 0;
-          	fprintf(compressed_file, "%c", c);
+          memset(aux, -1, sizeof(aux));
         }
   	}
+  
+  	if (i < 8) { //preenche o lixo com qualquer coisa e recebe os valores que foram "pra valer"
+    	for(; i <= 7; i++) {
+			aux[i] = 0;
+        }
+      	unsigned char c = 0; //zera todas as posições 
+          for (;i >= 0; i--) {
+            if (aux[i] == 1) {
+                c = set_bit(c, i); //mudando os bits pra 1 de acordo com o mapeamento do array.
+            }
+        }
+        fprintf(compressed_file, "%c", c);
+    }
 }
 
 int get_trash_size(hash_table *mapping) {
@@ -208,7 +227,7 @@ int main() {
 	
     fclose(arq);
     arq = open_file(file_path);
-    print_bits(arq, compressed_file, mapping); 
+    print_bits(arq, compressed_file, mapping, trash_size); 
   
     return 0;
 }
