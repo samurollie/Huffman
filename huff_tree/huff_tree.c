@@ -1,16 +1,17 @@
+// ARQUIVO : huffnode.c
 #include "huff_tree.h"
 
 int is_leaf(node *tree) {
   return !tree->left && !tree->right;
 }
 
-void print_tree (node* tree) {
+void print_tree (node* tree, int h) {
 	if(tree ==  NULL) {
 		return;
 	}
-	printf("Caracter: %c, frequencia: %d\n", tree->item, tree->frequency);
-	print_tree(tree->left);
-	print_tree(tree->right);
+	printf("Caracter: %c, frequencia: %d, altura: %d\n", tree->item, tree->frequency, h);
+	print_tree(tree->left, h + 1);
+	print_tree(tree->right, h + 1);
 }
 
 void print_on_file (FILE *f, node* tree) {
