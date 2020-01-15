@@ -15,19 +15,25 @@ int is_bit_i_set(unsigned char c, int i) { // verifica se o int i é igual a um.
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
+      	if (*found != 1) path[i + 1] = -1;
       	return;
     } else if (is_leaf(tree) && tree->item == item) {
-      *found = 1;
+  		printf("ACHEI!\n");
+      	*found = 1;
 		return;
     }
+  	printf("Estou no nó %c\n", tree->item);
   	if(*found != 1) {
+	  printf("if 1: (I): %d de (%c)\n", i,item);
       path[i] = 0;
 	} 	
 	search_huff_tree(tree->left, item, path, i - 1, found);
-    if(*found != 1){
+    if(*found != 1) {
+      printf("if 2: (I): %d de (%c)\n", i,item);
       path[i] = 1;
     }
   	search_huff_tree(tree->right, item, path, i - 1, found);
+    if (*found != 1) path[i + 1] = -1;
 }
 
 void dec_to_bin(int beggin, int rest, int array[], int i) { // passar resto = 0;
@@ -169,7 +175,7 @@ int main() {
     print_list(mylist->head);
     
     node *huff_tree = build_tree(mylist);
-    print_tree(huff_tree);
+    // print_tree(huff_tree, 0);
     
     FILE *compressed_file = fopen("compressed.huff", "w"); // cria um arquivo e permite a escrita nele.
     if (compressed_file ==  NULL) {
@@ -183,7 +189,7 @@ int main() {
           	memset(path, -1, sizeof(path));
           	unsigned char item = mapping->table[i]->key;
           	int found = 0;
-		  	search_huff_tree(huff_tree, item, path, 8, &found);	
+		  	search_huff_tree(huff_tree, item, path, 7, &found);	
             // mapping->table[i]->new_mapping = path;
           	for(int e = 0; e < 8; e++)
             {
@@ -228,13 +234,6 @@ int main() {
     printf ("Tamanho do lixo em binario: ");
   	dec_to_bin(trash_size, 0, array, 13);
     printf ("\n");
-  	
-    // printf("Primeiros bits do arquivo: ");
-    /* for (int i = 1;  < 16; i++) {
-        if (i == 8) printf(" ");
-        printf ("%d", array[i]);
-    } */
-    // printf ("\n");
   	
     unsigned char c = 0, d = 0;
   	for (int i = 16 - 1; i >= 0; i--) {
