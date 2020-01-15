@@ -1,17 +1,8 @@
 #include "../list/list.h"
 #include "../hash/hash.h"
 #include "../huff_tree/huff_tree.h"
+#include "../files/files.h"
 #include <string.h>
-
-unsigned char set_bit(unsigned char c, int i) { // essa função transforma o zero em um.
-    unsigned char mask = 1 << i;	
-    return mask | c;
-}
-
-int is_bit_i_set(unsigned char c, int i) { // verifica se o int i é igual a um.
-    unsigned char mask = 1 << i;
-    return mask & c;
-}
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
@@ -81,7 +72,7 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	// printf("\n");
 	// }
 	// }
-    	unsigned char unit; //okay
+    unsigned char unit; //okay
     int i = 0; //okay
   	unsigned char c = 0; //okay
   	while (fscanf(file, "%c", &unit) != EOF) {	
@@ -145,11 +136,6 @@ void get_frequency(FILE *file, hash_table *mapping) {
             mapping->table[h]->frequency++;
         }
   	}
-}
-
-FILE *open_file(char* path) {
-    FILE *f = fopen(path, "r");
-    return f;
 }
 
 int main() {
