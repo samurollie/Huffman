@@ -64,46 +64,54 @@ int changed_positions(int array[], int size) {
 }
 
 void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int trash_size) {
-	unsigned char unit;
-  	int aux[8], i = 0;
-    memset(aux, -1, sizeof(aux));
-  
-  	while (fscanf(file, "%c", &unit) != EOF) {
-		int h = (int) unit;
-      	int n = changed_positions(mapping->table[h]->new_mapping, 8); //para ver o tamanho no novo mapeamento
-      	
-      	for (int j = 0; j < n && i < 8; j++, i++) { //vai salvando no array auxiliar até formar um byte (necessariamente)
-			aux[i] = mapping->table[h]->new_mapping[j];
-        }
-        // printf("valor do i: %d\n", i);
-      	
-      	if (i == 8) { // Se ja formou um byte; de 0 até 8 - 1
-          // printf ("AQUI\n");  
-          unsigned char c = 0; //zera todas as posições 
-          	for (int j = 0; j < 8; j++) {
-				if (aux[j] == 1) {
-					c = set_bit(c, j); //mudando os bits pra 1 de acordo com o mapeamento do array.
-                }
+	for (int i = 0; i < HASH_SIZE; i++) {
+		if (mapping->table[i] != NULL) {
+        	printf("Posicao %d: ", i);
+          	printf("Chave: %c, Frequencia: %lld, ", mapping->table[i]->key, mapping->table[i]->frequency);
+          	printf("Novo mapeamento: ");
+          	for (int x = 0; x < 8; x++) {
+				printf("%d ", mapping->table[i]->new_mapping[x]);
             }
-          
-          fprintf(compressed_file, "%c", c);
-          i = 0;
-          memset(aux, -1, sizeof(aux));
+          	printf("\n");
         }
-  	}
-  
-  	if (i < 8) { //preenche o lixo com qualquer coisa e recebe os valores que foram "pra valer"
-    	for(; i <= 7; i++) {
-			aux[i] = 0;
-        }
-      	unsigned char c = 0; //zera todas as posições 
-          for (;i >= 0; i--) {
-            if (aux[i] == 1) {
-                c = set_bit(c, i); //mudando os bits pra 1 de acordo com o mapeamento do array.
-            }
-        }
-        fprintf(compressed_file, "%c", c);
     }
+  //   	unsigned char unit; //okay
+//     int i = 0; //okay
+//   	unsigned char c = 0; //okay
+//   	while (fscanf(file, "%c", &unit) != EOF) {	
+//       	printf("UNIT: %c\n", unit);
+//     	int h = (int) unit; //tá dando certo
+//       	int n = changed_positions(mapping->table[h]->new_mapping, 8);
+      
+//       	for (int j = 0; j < n; j++) {
+//           if (i == 8) {
+//             for (int x = 7; x >= 0; x--) {
+// 				printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
+//             }
+//             printf("\n");
+// 			fprintf(compressed_file, "%c", c);
+//             c = 0;
+//             i = 0;
+//           }
+//           printf("i = %d\n", i);
+//           printf("mapping do %c(%d) :\n", h, unit);
+//           for (int kkk = 0; kkk < 8; kkk++) {
+// 			printf("%d ", mapping->table[h]->new_mapping[kkk]);
+//           }
+//            printf("\n");
+//           if (mapping->table[h]->new_mapping[j] == 1) {
+//             c = set_bit(c, i);
+//           }
+//           i++;
+//         }
+//     }
+//   	c <<= trash_size; //deslocar os bits à esquerda de acordo com o tamanho do lixo
+//     fprintf(compressed_file, "%c", c);
+	
+//     for (int x = 7; x >= 0; x--) {
+//         printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
+//     }
+//     printf("\n");
 }
 
 int get_trash_size(hash_table *mapping) {
@@ -112,9 +120,12 @@ int get_trash_size(hash_table *mapping) {
   	for (i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) { // Tenho que multiplicar quantos bits um unico caracter daquele ocupa pela quantidade de vezes que ele aparece no texto
           bits_usados += changed_positions(mapping->table[i]->new_mapping, 8);
+          printf("Bits usados pelo %c: %d\n", mapping->table[i]->key, changed_positions(mapping->table[i]->new_mapping, 8));
           bits_usados *= mapping->table[i]->frequency;
+          printf("BITS USADOS (TOTAL): %d\n", bits_usados);
         }
     }
+  printf("RESULTADO FINAL: %d\n", bits_usados);
   	return (8 - (bits_usados % 8) == 8 ? 0 : 8 - (bits_usados % 8));
 }
 
@@ -173,21 +184,38 @@ int main() {
           	unsigned char item = mapping->table[i]->key;
           	int found = 0;
 		  	search_huff_tree(huff_tree, item, path, 8, &found);	
+            // mapping->table[i]->new_mapping = path;
+          	for(int e = 0; e < 8; e++)
+            {
+              mapping->table[i]->new_mapping[e] = path[e];
+            }
+          	
           	printf ("O caminho para o %c: ", item);
             for (int x = 0; x < 8; x++) {
-                printf ("%d ", path[x]);
+                printf ("%d ", mapping->table[i]->new_mapping[x]);
             }
             printf ("\n");
-            mapping->table[i]->new_mapping = path;
         }
     }
+  
+  	/* for (int i = 0; i < HASH_SIZE; i++) {
+		if (mapping->table[i] != NULL) {
+        	printf("Posicao %d: ", i);
+          	printf("Chave: %c, Frequencia: %lld, ", mapping->table[i]->key, mapping->table[i]->frequency);
+          	printf("Novo mapeamento: ");
+          	for (int x = 0; x < 8; x++) {
+				printf("%d ", mapping->table[i]->new_mapping[x]);
+            }
+          	printf("\n");
+        }
+    } */
 
   	//agora vamos escrever todos os bytes no arquivo, bit a bit;
   	int tree_size = 0;
-  	get_number_of_nodes(huff_tree, &tree_size); // PROBLEMA AQUIIIII
+  	get_number_of_nodes(huff_tree, &tree_size);
   	printf ("Tamanho da árvore: %d\n", tree_size);
 
-    int trash_size = get_trash_size(mapping); // NÃO FUNCIONA !!
+    int trash_size = get_trash_size(mapping);
     printf("Tamanho do lixo: %d\n", trash_size);
 
   	int array[16];
