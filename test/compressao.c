@@ -70,54 +70,54 @@ int changed_positions(int array[], int size) {
 }
 
 void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int trash_size) {
-	for (int i = 0; i < HASH_SIZE; i++) {
-		if (mapping->table[i] != NULL) {
-        	printf("Posicao %d: ", i);
-          	printf("Chave: %c, Frequencia: %lld, ", mapping->table[i]->key, mapping->table[i]->frequency);
-          	printf("Novo mapeamento: ");
-          	for (int x = 0; x < 8; x++) {
-				printf("%d ", mapping->table[i]->new_mapping[x]);
+	// for (int i = 0; i < HASH_SIZE; i++) {
+	// 	if (mapping->table[i] != NULL) {
+	// printf("Posicao %d: ", i);
+	// printf("Chave: %c, Frequencia: %lld, ", mapping->table[i]->key, mapping->table[i]->frequency);
+	// printf("Novo mapeamento: ");
+	// for (int x = 0; x < 8; x++) {
+	// 			printf("%d ", mapping->table[i]->new_mapping[x]);
+	// }
+	// printf("\n");
+	// }
+	// }
+    	unsigned char unit; //okay
+    int i = 0; //okay
+  	unsigned char c = 0; //okay
+  	while (fscanf(file, "%c", &unit) != EOF) {	
+      	printf("UNIT: %c\n", unit);
+    	int h = (int) unit; //tá dando certo
+      	int n = changed_positions(mapping->table[h]->new_mapping, 8);
+      
+      	for (int j = 0; j < n; j++) {
+          if (i == 8) {
+            for (int x = 7; x >= 0; x--) {
+				printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
             }
-          	printf("\n");
+            printf("\n");
+			fprintf(compressed_file, "%c", c);
+            c = 0;
+            i = 0;
+          }
+          printf("i = %d\n", i);
+          printf("mapping do %c(%d) :\n", h, unit);
+          for (int kkk = 0; kkk < 8; kkk++) {
+			printf("%d ", mapping->table[h]->new_mapping[kkk]);
+          }
+           printf("\n");
+          if (mapping->table[h]->new_mapping[j] == 1) {
+            c = set_bit(c, i);
+          }
+          i++;
         }
     }
-  //   	unsigned char unit; //okay
-//     int i = 0; //okay
-//   	unsigned char c = 0; //okay
-//   	while (fscanf(file, "%c", &unit) != EOF) {	
-//       	printf("UNIT: %c\n", unit);
-//     	int h = (int) unit; //tá dando certo
-//       	int n = changed_positions(mapping->table[h]->new_mapping, 8);
-      
-//       	for (int j = 0; j < n; j++) {
-//           if (i == 8) {
-//             for (int x = 7; x >= 0; x--) {
-// 				printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
-//             }
-//             printf("\n");
-// 			fprintf(compressed_file, "%c", c);
-//             c = 0;
-//             i = 0;
-//           }
-//           printf("i = %d\n", i);
-//           printf("mapping do %c(%d) :\n", h, unit);
-//           for (int kkk = 0; kkk < 8; kkk++) {
-// 			printf("%d ", mapping->table[h]->new_mapping[kkk]);
-//           }
-//            printf("\n");
-//           if (mapping->table[h]->new_mapping[j] == 1) {
-//             c = set_bit(c, i);
-//           }
-//           i++;
-//         }
-//     }
-//   	c <<= trash_size; //deslocar os bits à esquerda de acordo com o tamanho do lixo
-//     fprintf(compressed_file, "%c", c);
+  	c <<= trash_size; //deslocar os bits à esquerda de acordo com o tamanho do lixo
+    fprintf(compressed_file, "%c", c);
 	
-//     for (int x = 7; x >= 0; x--) {
-//         printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
-//     }
-//     printf("\n");
+    for (int x = 7; x >= 0; x--) {
+        printf("%d", (is_bit_i_set(c, x) == 0) ? 0 : 1);
+    }
+    printf("\n");
 }
 
 int get_trash_size(hash_table *mapping) {
