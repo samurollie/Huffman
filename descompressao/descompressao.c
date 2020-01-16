@@ -25,49 +25,49 @@ int is_leaf_temp (tree *tree) {
 void the_walking_tree (FILE *compressed_file, FILE *file, tree *mytree, int trash_size) {
     unsigned char unit, temp;
     tree* root = mytree;
-    printf("aq\n");
+    // printf("aq\n");
     fscanf(file, "%c", &unit);
     for(;;) {
         if (fscanf(file, "%c", &temp) == EOF) {
-            printf("%c : ", unit);
+            // printf("%c : ", unit);
             
             for(int i = 7; i >= trash_size; i--) {
-                printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
+                // printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
                 if (is_leaf_temp(mytree)) {
-                    printf("%c\n", mytree->item);
+                    // printf("%c\n", mytree->item);
                     
                     fprintf (compressed_file, "%c", mytree->item);
                     mytree = root;
                     i++;
                 } else if (is_bit_i_set(unit, i) == 0){
                     mytree = mytree->left;
-                    printf("esquerda\n");
+                    // printf("esquerda\n");
                 } else {
                     mytree = mytree->right;
-                    printf("direita\n");
+                    // printf("direita\n");
                 }
             }
             
-            printf("\n");
+            // printf("\n");
             break;
         } else {
-            printf("%c : ", unit);
+            // printf("%c : ", unit);
             for (int i = 7; i >= 0; i--) {
-                printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
+                // printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
                 if (is_leaf_temp(mytree)) {
-                    printf("%c\n", mytree->item);
+                    // printf("%c\n", mytree->item);
                     fprintf (compressed_file, "%c", mytree->item);
                     mytree = root;
                     i++;
                 } else if (is_bit_i_set(unit, i) == 0){
                     mytree = mytree->left;
-                    printf("esquerda\n");
+                    // printf("esquerda\n");
                 } else {
                     mytree = mytree->right;
-                    printf("direita\n");
+                    // printf("direita\n");
                 }
             }
-            printf("\n");
+            // printf("\n");
         }
         unit = temp;
     }
