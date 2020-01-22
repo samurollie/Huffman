@@ -31,35 +31,29 @@ void print_on_file (FILE *f, node* tree) {
   	print_on_file(f, tree->right);
 }
 
-node *create_node(node *head, lli frequency, unsigned char item, list *list){
+node *create_node(lli frequency, unsigned char item, queue *queue){
 	node *new_node = (node*) malloc(sizeof(node));
     new_node->frequency = frequency;
     new_node->item = item;
-    new_node->left = list->head;
-    new_node->right = list->head->next;
-    list->head = list->head->next->next;
-    new_node->left->next = NULL;
-    new_node->right->next = NULL;
+	new_node->left = dequeue(queue);
+	new_node->right = dequeue(queue);
     new_node->next = NULL;
     return new_node;
 }
 
-node* join(list* list) { 
+node* join(queue* queue) { 
   	node* father = NULL; // Cria um nó
-    lli frequency = list->head->frequency + list->head->next->frequency; // Soma a frequencia dos dois primeiros nós da lista;
+    lli frequency = queue->head->frequency + queue->head->next->frequency; // Soma a frequencia dos dois primeiros nós da queuea;
     unsigned char id = '*'; // O item que eu devo salvar pra indicar que é um nó interno
-  	father = create_node(father, frequency, id, list); // Adiciono tudo ao novo nó;
-  	list->size--;
-  	list->size--;
+  	father = create_node(frequency, id, queue); // Adiciono tudo ao novo nó;
   	return father;
 } 
-//hahahahahahahahaha
 
-node* build_tree (list *mylist) {
-  while(mylist->size > 1) { 
-  	node* father = join(mylist);
-    insert(mylist, father);
+node* build_tree (queue *myqueue) {
+  while(myqueue->size > 1) { 
+  	node* father = join(myqueue);
+    enqueue(myqueue, father);
   }
-  node *huff_tree = mylist->head;
+  node *huff_tree = myqueue->head;
   return huff_tree;
 }

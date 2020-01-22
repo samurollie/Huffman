@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../list/list.h"
+#include "../queue/queue.h"
 
 /** @param tree: ponteiro para um nó da árvore*/
 /** @return      retorna se o ponteiro é uma folha da árvore ou não*/
@@ -17,20 +17,18 @@ void print_tree (node* tree, int h);
 /** @param tree: ponteiro para a árvore a ser impressa no arquivo */
 void print_on_file (FILE *f, node* tree);
 
-//OBS: RETIRAR ESSE HEAD DO PARAMETRO!!!!!!!!!!!!!!!!!!!!!!
-
 /** @param frequency:  frequência do item a ser utilizado*/
 /** @param item:       item a ser utilizado*/
-/** @param list:       ponteiro para a lista*/
-/** @return retorna um novo nó para lista*/
-node *create_node(node *head, lli frequency, unsigned char item, list *list);
+/** @param queue:       ponteiro para a queuea*/
+/** @return retorna um novo nó para queuea*/
+node *create_node(lli frequency, unsigned char item, queue *queue);
 
-/** @param list: ponteiro para lista a ser manipulada*/
-/** @return retorna um nó pai dos dois primeiros elementos da lista, cuja frequência é a soma dos dois primeiros elementos da lista*/
-node* join(list* list);
+/** @param queue: ponteiro para queuea a ser manipulada*/
+/** @return retorna um nó pai dos dois primeiros elementos da queuea, cuja frequência é a soma dos dois primeiros elementos da queuea*/
+node* join(queue* queue);
 
-/** @param mylist: recebe um ponteiro para a lista*/
+/** @param myqueue: recebe um ponteiro para a queuea*/
 /** @return retorna um nó que é o resultado final da construção da árvore de Huffman*/
-node* build_tree (list *mylist);
+node* build_tree (queue *myqueue);
 
 #endif

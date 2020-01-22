@@ -1,4 +1,4 @@
-#include "../list/list.h"
+#include "../queue/queue.h"
 #include "../files/files.h"
 #include "../huff_tree/huff_tree.h"
 #include <string.h>

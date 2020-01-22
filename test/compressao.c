@@ -1,4 +1,4 @@
-#include "../list/list.h"
+#include "../queue/queue.h"
 #include "../hash/hash.h"
 #include "../huff_tree/huff_tree.h"
 #include "../files/files.h"
@@ -121,13 +121,13 @@ int main() {
   	hash_table* mapping = create_hash_table();
     get_frequency(arq, mapping);
 
-    list *mylist = create_list();
+    queue *myqueue = create_queue();
     for (int i = 0; i < 256; i++) {
         if (mapping->table[i] != NULL) {
-            mylist = add(mylist, mapping->table[i]->key, mapping->table[i]->frequency);
+            myqueue = add(myqueue, mapping->table[i]->key, mapping->table[i]->frequency);
         }
     }
-    node *huff_tree = build_tree(mylist);
+    node *huff_tree = build_tree(myqueue);
     
     fclose(arq);
     arq = open_file(file_path);

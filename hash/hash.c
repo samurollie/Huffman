@@ -11,8 +11,8 @@ int contains_key(hash_table *ht, unsigned char key) {
     return 0;
 }
 
-// Imprime uma lista encadeada;
-void print_linked_list (hash_node* head) {
+// Imprime uma queuea encadeada;
+void print_linked_queue (hash_node* head) {
     while (head != NULL) {
         printf ("Chave: %c, Frequencia: %lld ", head->key, head->frequency);
         head = head->next;
@@ -25,7 +25,7 @@ void print_hash_table(hash_table *ht) {
     for (int i = 0; i < HASH_SIZE; i++) {
         if (ht->table[i] != NULL) {
             printf("Posicao %d: ", i);
-            print_linked_list(ht->table[i]);
+            print_linked_queue(ht->table[i]);
         }
     }
 }

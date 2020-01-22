@@ -27,8 +27,8 @@ struct hash_table {
 /** @return retorna verdadeiro caso o item pertença à ht e falso caso contrário*/
 int contains_key(hash_table *ht, unsigned char key);
 
-/** @param head: ponteiro para uma lista encadeada de um hash table a ser impressa*/
-void print_linked_list(hash_node* head);
+/** @param head: ponteiro para uma queuea encadeada de um hash table a ser impressa*/
+void print_linked_queue(hash_node* head);
 
 /** @param ht: ponteiro para uma hash a ser impressa*/
 void print_hash_table(hash_table *ht);

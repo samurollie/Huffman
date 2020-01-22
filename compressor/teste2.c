@@ -1,12 +1,12 @@
-/* /* //Função usada na hora de criar a lista.
-list *add (list *list, unsigned char item, lli frequency, node* left, node* right){ //lembrar de colocar o parametro no resto do código onde ela foi chamada
+/* /* //Função usada na hora de criar a queuea.
+queue *add (queue *queue, unsigned char item, lli frequency, node* left, node* right){ //lembrar de colocar o parametro no resto do código onde ela foi chamada
     node *new_node = (node*) malloc(sizeof(node));
     new_node -> item = item; 
     new_node -> frequency = frequency;
     new_node -> right = right;
     new_node -> left = left;
-    insert(list, new_node);
-    return list;
+    insert(queue, new_node);
+    return queue;
 }
 
 
@@ -31,15 +31,15 @@ int main() {
     arq = open_file("../a.txt");
     lli *frequency = get_frequency(arq);
     
-    list *list = create_list();
-    int i, size_list = 0;
+    queue *queue = create_queue();
+    int i, size_queue = 0;
     for (i = 0; i < 256; i++) {
         if (frequency[i] != 0) {
-            list = add(list, 'a',frequency[i], NULL, NULL);
-            size_list++;
+            queue = add(queue, 'a',frequency[i], NULL, NULL);
+            size_queue++;
         }
     }
-    print_list(list->head);
+    print_queue(queue->head);
     
     return 0;
 } */

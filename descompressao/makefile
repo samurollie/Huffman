@@ -1,5 +1,5 @@
-HEADERS := ../hash/hash.h ../list/list.h ../huff_tree/huff_tree.h ../files/files.h
-SRC := ../hash/hash.c ../list/list.c ../huff_tree/huff_tree.c ../files/files.c
+HEADERS := ../hash/hash.h ../queue/queue.h ../huff_tree/huff_tree.h ../files/files.h
+SRC := ../hash/hash.c ../queue/queue.c ../huff_tree/huff_tree.c ../files/files.c
 MAIN := descompressao.c
 
 compile:
