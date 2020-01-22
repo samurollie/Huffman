@@ -4,7 +4,13 @@
 #include <string.h>
 #include <math.h>
 
+//A ÚNICA COISA QUE FUNCIONA :)
+//SAMUEL DISSE QUE É DA COMPUTAÇÃO
+//BRUNINHA INDAGA QUEM GANHA MAIS DINHEIRO 
+//FIREMAN SÓ RI E DIGITA COISAS INÚTEIS
+// Laudo médico: Fireman
 typedef struct tree tree;
+
 struct tree {
     unsigned char item;
     tree *left;

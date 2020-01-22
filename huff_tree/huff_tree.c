@@ -53,6 +53,7 @@ node* join(list* list) {
   	list->size--;
   	return father;
 } 
+//hahahahahahahahaha
 
 node* build_tree (list *mylist) {
   while(mylist->size > 1) { 
