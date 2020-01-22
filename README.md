@@ -1,6 +1,7 @@
 # Huffman
 
 * Suite é basicamente uma fila;
+* Em vez da posição ser numero será um nome;
 * CU_add_suite = Seria, respectivamente, a função create_queue;
 * CU_add_test = Enfileira a função criada;
 * CU_ASSERT = Testa;
