@@ -40,8 +40,8 @@ node *create_node(lli frequency, unsigned char item, queue *queue, node* left, n
 	node *new_node = (node*) malloc(sizeof(node));
     new_node->frequency = frequency;
     new_node->item = item;
-	new_node->left = dequeue(queue);
-	new_node->right = dequeue(queue);
+	new_node->left = left;
+	new_node->right = right;
     new_node->next = NULL;
     return new_node;
 }
