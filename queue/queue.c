@@ -36,12 +36,18 @@ void enqueue(queue* queue, node* new_node) {
     queue->size++;
 }
 
+node *create_node(lli frequency, unsigned char item, queue *queue, node* left, node* right){
+	node *new_node = (node*) malloc(sizeof(node));
+    new_node->frequency = frequency;
+    new_node->item = item;
+	new_node->left = dequeue(queue);
+	new_node->right = dequeue(queue);
+    new_node->next = NULL;
+    return new_node;
+}
+
 queue *add (queue *queue, unsigned char item, lli frequency) {
-    node *new_node = (node*) malloc(sizeof(node));
-    new_node -> item = item; 
-    new_node -> frequency = frequency;
-    new_node -> right = NULL;
-    new_node -> left = NULL;
+    node *new_node = create_node(frequency, item, queue, NULL, NULL);
     enqueue(queue, new_node);
     return queue;
 }

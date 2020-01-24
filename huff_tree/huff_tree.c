@@ -31,21 +31,11 @@ void print_on_file (FILE *f, node* tree) {
   	print_on_file(f, tree->right);
 }
 
-node *create_node(lli frequency, unsigned char item, queue *queue){
-	node *new_node = (node*) malloc(sizeof(node));
-    new_node->frequency = frequency;
-    new_node->item = item;
-	new_node->left = dequeue(queue);
-	new_node->right = dequeue(queue);
-    new_node->next = NULL;
-    return new_node;
-}
-
 node* join(queue* queue) { 
   	node* father = NULL; // Cria um nó
     lli frequency = queue->head->frequency + queue->head->next->frequency; // Soma a frequencia dos dois primeiros nós da queuea;
     unsigned char id = '*'; // O item que eu devo salvar pra indicar que é um nó interno
-  	father = create_node(frequency, id, queue); // Adiciono tudo ao novo nó;
+  	father = create_node(frequency, id, queue, dequeue(queue), dequeue(queue)); // Adiciono tudo ao novo nó;
   	return father;
 } 
 

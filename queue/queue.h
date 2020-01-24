@@ -30,6 +30,14 @@ void enqueue(queue* queue, node* new_node);
 
 node *dequeue(queue *queue);
 
+/** @param frequency:  frequência do item a ser utilizado*/
+/** @param item:       item a ser utilizado*/
+/** @param queue:       ponteiro para a queuea*/
+/** @param left:  */
+/** @param right: */
+/** @return retorna um novo nó para queuea*/
+node *create_node(lli frequency, unsigned char item, queue *queue, node *left, node *right);
+
 /** @param queue:     fila que receberá um novo elemento*/
 /** @param item:      o item que vai ser salvo na fila */
 /** @param frequency: a frequencia do item*/
