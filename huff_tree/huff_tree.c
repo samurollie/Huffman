@@ -17,7 +17,7 @@ void print_tree (node* tree, int h) {
 void print_on_file (FILE *f, node* tree) {
 	if (tree == NULL) {
 		return;
-    }
+	}
 	if (is_leaf(tree)) {
 		if (tree->item == '*' || tree->item == '\\') {
   			fprintf(f, "\\%c", tree->item);
@@ -32,18 +32,24 @@ void print_on_file (FILE *f, node* tree) {
 }
 
 node* join(queue* queue) { 
-  	node* father = NULL; // Cria um nó
-    lli frequency = queue->head->frequency + queue->head->next->frequency; // Soma a frequencia dos dois primeiros nós da queuea;
-    unsigned char id = '*'; // O item que eu devo salvar pra indicar que é um nó interno
-  	father = create_node(frequency, id, queue, dequeue(queue), dequeue(queue)); // Adiciono tudo ao novo nó;
+  	node* father = NULL;
+	lli frequency = queue->head->frequency + queue->head->next->frequency; // Soma a frequencia dos dois primeiros nós da queuea;
+	unsigned char id = '*';
+	node* left = dequeue(queue);
+	node* right = dequeue(queue);
+
+  	father = create_node(frequency, id, queue, left, right); // Adiciono tudo ao novo nó;
   	return father;
-} 
+}
 
 node* build_tree (queue *myqueue) {
-  while(myqueue->size > 1) { 
-  	node* father = join(myqueue);
-    enqueue(myqueue, father);
-  }
-  node *huff_tree = myqueue->head;
-  return huff_tree;
+	printf("Tamanho da lista (antes de construir): %d\n", myqueue->size);
+	printf("fila: \n");
+	print_queue(myqueue->head);
+	while(myqueue->size > 1) { 
+		node* father = join(myqueue);
+		enqueue(myqueue, father);
+	}
+	node *huff_tree = myqueue->head;
+	return huff_tree;
 }
