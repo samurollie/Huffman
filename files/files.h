@@ -16,6 +16,6 @@ unsigned char set_bit(unsigned char c, int i);
 /** @param c: o bit para verificação*/
 /** @param i: a posição a ser verificada*/
 /** @return retorna se o bit está setado na posição i ou não*/
-int is_bit_i_set(unsigned char c, int i);
+int is_bit_i_set(unsigned short c, int i);
 
 #endif

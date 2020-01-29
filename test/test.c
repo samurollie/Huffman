@@ -19,13 +19,13 @@ void test_tree(void) {
     // add(queue, 'D', 3);
     // add(queue, 'E', 2);
     // add(queue, 'F', 1);
-    node *tree = create_node(6, 'A', queue);
+    // node *tree = create_node(6, 'A', queue);
     // node *tree = create_node(5, 'B', queue);
     // node *tree = create_node(4, 'C', queue);
     // node *tree = create_node(3, 'D', queue);
     // node *tree = create_node(2, 'E', queue);
     // node *tree = create_node(1, 'F', queue);
-    CU_ASSERT_PTR_NOT_NULL(tree);
+    // CU_ASSERT_PTR_NOT_NULL(tree);
 }
 
 void test_queue(void) {
@@ -48,6 +48,8 @@ void test_queue(void) {
     add(queue, 'F', 1);
     CU_ASSERT(queue->head->item == 'F');
     
+    // * e \\
+
     /*VEFICA SE DESENFILEIRA CERTO ::::: */
     CU_ASSERT(queue->head == dequeue(queue));
     CU_ASSERT(queue->head == dequeue(queue));
@@ -55,6 +57,7 @@ void test_queue(void) {
     CU_ASSERT(queue->head == dequeue(queue));
     CU_ASSERT(queue->head == dequeue(queue));
     CU_ASSERT(queue->head == dequeue(queue));
+    CU_ASSERT(NULL == dequeue(queue));
 }
 
 int main () {

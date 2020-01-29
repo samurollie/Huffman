@@ -6,6 +6,7 @@
         "stdio.h": "c",
         "cstdio": "c",
         "hash.h": "c",
-        "huff_tree.h": "c"
+        "huff_tree.h": "c",
+        "files.h": "c"
     }
 }
