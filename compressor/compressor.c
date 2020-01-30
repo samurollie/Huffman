@@ -115,7 +115,7 @@ void compress() {
 	arq = fopen(file_path, "rb");
 	if (arq == NULL) {
 		printf ("Arquivo não encontrado\n");
-	  	return 0;
+	  	return;
 	}
 	
 	hash_table* mapping = create_hash_table();
@@ -186,8 +186,8 @@ void compress() {
 	strcat(file_path, ".huff");
 	FILE *compressed_file = fopen(file_path, "wb"); // cria um arquivo e permite a escrita nele.
 	if (compressed_file == NULL) {
-	  printf ("Não foi possível comprimir o arquivo\n");
-	  return 0;
+		printf ("Não foi possível comprimir o arquivo\n");
+		return;
 	}
     fprintf(compressed_file, "%c%c", c >> 8, c);
 
@@ -205,13 +205,9 @@ void compress() {
 		}
 	}*/
 
-	printf(">>>>>>>\n");/* 
-	for (int i = 0; i < 16; i++) {
-		printf("%d", is_bit_i_set(c, i));
-	} */
-	// fprintf(compressed_file, "%hi", c);
+	printf(">>>>>>>\n");
 	print_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
 	
 	print_bits(arq, compressed_file, mapping, trash_size);
-	return 0;
+	return;
 }
