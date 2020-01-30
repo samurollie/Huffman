@@ -11,16 +11,18 @@ int main () {
         switch (op) {
             case 1:
                 compress();
-                break;
+                return 0;
+            break;
             case 2:
                 decompress();
-                break;
+                return 0;
+            break;
             case 3:
                 return 0;
-                break;
+            break;
             default:
                 printf("Opção inválida!\n");
-                break;
+            break;
         }
     }
 }

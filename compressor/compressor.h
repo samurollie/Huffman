@@ -4,7 +4,7 @@
 #include "../queue/queue.h"
 #include "../hash/hash.h"
 #include "../huff_tree/huff_tree.h"
-#include "../files/files.h"
+#include "../bits/bits.h"
 #include <string.h>
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found);

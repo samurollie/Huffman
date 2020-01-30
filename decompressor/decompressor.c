@@ -77,7 +77,7 @@ void decompress () {
     printf("Insira o caminho para o arquivo que deseja descompactar: ");
     char file_path[5000];
     scanf ("%[^\n]s", file_path);
-    FILE *arq = open_file(file_path);   
+    FILE *arq = fopen(file_path, "rb");   
     if (arq == NULL) {
         printf("Arquivo nao encontrado!\n");
         return;
@@ -89,9 +89,9 @@ void decompress () {
     for(int i = 0; i < 16; i++) {
         if (i < 8) {
             int n = (is_bit_i_set(byte1, 7 - i) != 0) ? 1 : 0; // se o bit estiver setado, n = 1;
-            printf ("n = %d, i = %d\n", n, 7 - i);
+            // printf ("n = %d, i = %d\n", n, 7 - i);
             if (i < 3) { // apenas os 3 primeiros bites do primeiro byte são destinados ao lixo.
-                trash_size += pow(2, i) * n; // transforma de binario para decimal.
+                trash_size += pow(2, 2 - i) * n; // transforma de binario para decimal.
             } else { // os outros 5 do primeiro byte e o segundo byte inteiro são para p tamanho da arvore.
                 tree_size += pow(2, 15 - i) * n;
                 /*Deve-se fazer 15-i pois na hora de transformar de binario para decimal as posições 
@@ -99,12 +99,13 @@ void decompress () {
             }
         } else {
             int n = (is_bit_i_set(byte2, 15 - i) != 0) ? 1 : 0;
-            printf ("n2 = %d, i = %d\n", n, 15 - i);
+            // printf ("n2 = %d, i = %d\n", n, 15 - i);
             tree_size += pow(2, 15 - i) * n;
         }
     }
     printf ("Tamanho do lixo: %d Tamanho da arvore: %d\n", trash_size, tree_size);
     
+    printf("Arvore: ");
     tree *huff_tree = NULL;
     huff_tree  = create_tree_from_file(arq, huff_tree);
 

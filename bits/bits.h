@@ -1,12 +1,8 @@
-#ifndef FILES_H
-#define FILES_H
+#ifndef BITS_H
+#define BITS_H
 
 #include <stdio.h>
 #include <stdlib.h>
-
-/** @param path: caminho para o arquivo*/
-/** @return retorna o arquivo aberto*/
-FILE *open_file(char* path);
 
 /** @param c: o bit a ser setado*/
 /** @param i: a posição do bit que deve ser setada*/

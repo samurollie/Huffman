@@ -78,7 +78,10 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	}
 	byte >>= 1; // por causa do ultimo loop;
 	byte <<= trash_size;
-	fprintf(compressed_file, "%c", byte);
+	// fprintf(compressed_file, "%c", byte);
+	if (trash_size != 0) {
+		fprintf(compressed_file, "%c", byte);
+	}
 }
 
 int get_trash_size(hash_table *mapping) {
@@ -109,8 +112,9 @@ void get_frequency(FILE *file, hash_table *mapping) {
 void compress() {
 	char file_path[5000];
 	printf("Digite o caminho para o arquivo que deseja comprimir: ");
-	scanf ("%s", file_path);
-	
+	scanf ("%[^\n]s", file_path);
+	printf("%s\n", file_path);
+
 	FILE *arq; 
 	arq = fopen(file_path, "rb");
 	if (arq == NULL) {
@@ -136,7 +140,7 @@ void compress() {
 	DEBUG print_tree(huff_tree, 0);
 	
 	fclose(arq);
-	arq = open_file(file_path);
+	arq = fopen(file_path, "rb");
 	
 	for (int i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {

@@ -2,7 +2,7 @@
 #define DECOMPRESSOR_H
 
 #include "../queue/queue.h"
-#include "../files/files.h"
+#include "../bits/bits.h"
 #include "../huff_tree/huff_tree.h"
 #include <string.h>
 #include <math.h>
