@@ -1,21 +1,4 @@
-#include "../queue/queue.h"
-#include "../files/files.h"
-#include "../huff_tree/huff_tree.h"
-#include <string.h>
-#include <math.h>
-
-//A ÚNICA COISA QUE FUNCIONA :)
-//SAMUEL DISSE QUE É DA COMPUTAÇÃO
-//BRUNINHA INDAGA QUEM GANHA MAIS DINHEIRO 
-//FIREMAN SÓ RI E DIGITA COISAS INÚTEIS
-// Laudo médico: Fireman
-typedef struct tree tree;
-
-struct tree {
-    unsigned char item;
-    tree *left;
-    tree * right;
-};
+#include "decompressor.h"
 
 void print_tree_again(tree* tree) {
     if (tree == NULL) return;
@@ -29,55 +12,41 @@ int is_leaf_temp (tree *tree) {
 }
 
 void the_walking_tree (FILE *compressed_file, FILE *file, tree *mytree, int trash_size) {
-    unsigned char unit, temp;
+    unsigned char unit, current;
     tree* root = mytree;
-    // printf("aq\n");
     fscanf(file, "%c", &unit);
     for(;;) {
-        if (fscanf(file, "%c", &temp) == EOF) {
-            // printf("%c : ", unit);
-            
-            for(int i = 7; i >= trash_size; i--) {
-                // printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
+        if (fscanf(file, "%c", &current) == EOF) {
+            for(int i = 7; i >= trash_size; i--) { // faz até o tamanho do lixo pq não é preciso percorrer o byte inteiro.
                 if (is_leaf_temp(mytree)) {
-                    // printf("%c\n", mytree->item);
-                    
                     fprintf (compressed_file, "%c", mytree->item);
                     mytree = root;
                     i++;
                 } else if (is_bit_i_set(unit, i) == 0){
                     mytree = mytree->left;
-                    // printf("esquerda\n");
                 } else {
                     mytree = mytree->right;
-                    // printf("direita\n");
                 }
             }
-            
-            // printf("\n");
             break;
         } else {
-            // printf("%c : ", unit);
-            for (int i = 7; i >= 0; i--) {
-                // printf("%d", (is_bit_i_set(unit, i) == 0) ? 0 : 1);
+            for (int i = 7; i >= 0; i--) { // vai percorrer todo o byte.
+            /* Deve começar do 7 pois o byte foi preenchido da direita para esquerda,
+            mas na hora de ser utilizado, usa-se da esqueda para direita. */
                 if (is_leaf_temp(mytree)) {
-                    // printf("%c\n", mytree->item);
                     fprintf (compressed_file, "%c", mytree->item);
-                    mytree = root;
+                    mytree = root; // voltam a arvore do começo.
                     i++;
-                } else if (is_bit_i_set(unit, i) == 0){
+                } else if (is_bit_i_set(unit, i) == 0){ // deve ir para esquerda.
                     mytree = mytree->left;
-                    // printf("esquerda\n");
                 } else {
                     mytree = mytree->right;
-                    // printf("direita\n");
                 }
             }
-            // printf("\n");
         }
-        unit = temp;
+        unit = current;
     }
-    fprintf (compressed_file, "%c", mytree->item);
+    fprintf (compressed_file, "%c", mytree->item); // para printar o ultimo item.
 }
 
 tree* create_child (unsigned char item, tree* left, tree* right) {
@@ -104,27 +73,29 @@ tree* create_tree_from_file(FILE* file, tree* tree) {
     return tree;
 }
 
-int main () {
+void decompress () {
     printf("Insira o caminho para o arquivo que deseja descompactar: ");
     char file_path[5000];
     scanf ("%[^\n]s", file_path);
     FILE *arq = open_file(file_path);   
     if (arq == NULL) {
         printf("Arquivo nao encontrado!\n");
-        return 0;
+        return;
     }
 
-    unsigned char byte1, byte2;
+    unsigned char byte1, byte2; // byte1 = tamanho do lixo // byte2 = tamanho da arvore. 
     int trash_size = 0, tree_size = 0;
     fscanf(arq, "%c%c", &byte1, &byte2);
     for(int i = 0; i < 16; i++) {
         if (i < 8) {
-            int n = (is_bit_i_set(byte1, 7 - i) != 0) ? 1 : 0;
+            int n = (is_bit_i_set(byte1, 7 - i) != 0) ? 1 : 0; // se o bit estiver setado, n = 1;
             printf ("n = %d, i = %d\n", n, 7 - i);
-            if (i < 3) {
-                trash_size += pow(2, i) * n;
-            } else {
+            if (i < 3) { // apenas os 3 primeiros bites do primeiro byte são destinados ao lixo.
+                trash_size += pow(2, i) * n; // transforma de binario para decimal.
+            } else { // os outros 5 do primeiro byte e o segundo byte inteiro são para p tamanho da arvore.
                 tree_size += pow(2, 15 - i) * n;
+                /*Deve-se fazer 15-i pois na hora de transformar de binario para decimal as posições 
+                são numeradas ao contrario, logo, o correto dos indices é: 0 1 2  12 11 10 9... */
             }
         } else {
             int n = (is_bit_i_set(byte2, 15 - i) != 0) ? 1 : 0;
@@ -140,7 +111,7 @@ int main () {
     print_tree_again(huff_tree);
     printf("\n"); 
 
-    char original_file[strlen(file_path)];
+    char original_file[strlen(file_path)]; // serve para retornar ao nome original do arquivo, ou seja, retirar o .huff.
     for (int x = 0; x < strlen(file_path); x++) {
         original_file[x] = file_path[x];
     }
@@ -149,9 +120,9 @@ int main () {
     
     FILE *original = fopen(original_file, "w");
     if (original == NULL) {
-        printf("ai\n");
+        printf("Não foi possível descompactar o arquivo.\n");
     }
 
-    the_walking_tree(original, arq, huff_tree, trash_size);
-    return 0;
+    the_walking_tree(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.
+    return;
 }

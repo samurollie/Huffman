@@ -1,8 +1,6 @@
-#include "../queue/queue.h"
-#include "../hash/hash.h"
-#include "../huff_tree/huff_tree.h"
-#include "../files/files.h"
-#include <string.h>
+#include "compressor.h"
+
+#define DEBUG if(0)
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
@@ -108,20 +106,24 @@ void get_frequency(FILE *file, hash_table *mapping) {
 	  }
 }
 
-int main() {
+void compress() {
 	char file_path[5000];
 	printf("Digite o caminho para o arquivo que deseja comprimir: ");
 	scanf ("%s", file_path);
 	
 	FILE *arq; 
-	arq = open_file(file_path);
+	arq = fopen(file_path, "rb");
 	if (arq == NULL) {
 		printf ("Arquivo não encontrado\n");
-	  	return 0;
+	  	return;
 	}
 	
 	hash_table* mapping = create_hash_table();
 	get_frequency(arq, mapping);
+
+	DEBUG printf("HASH TABLE::::: \n");
+	DEBUG print_hash_table(mapping);
+	DEBUG printf("\n");
 
 	queue *myqueue = create_queue();
 	for (int i = 0; i < 256; i++) {
@@ -129,17 +131,12 @@ int main() {
 			myqueue = add(myqueue, mapping->table[i]->key, mapping->table[i]->frequency);
 		}
 	}
+
 	node *huff_tree = build_tree(myqueue);
+	DEBUG print_tree(huff_tree, 0);
 	
 	fclose(arq);
 	arq = open_file(file_path);
-
-	strcat(file_path, ".huff");
-	FILE *compressed_file = fopen(file_path, "w"); // cria um arquivo e permite a escrita nele.
-	if (compressed_file ==  NULL) {
-	  printf ("Não foi possível comprimir o arquivo\n");
-	  return 0;
-	}
 	
 	for (int i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
@@ -154,7 +151,16 @@ int main() {
 			}
 		}
 	}
-
+	
+	/* for (int  i = 0; i < HASH_SIZE; i++) {
+		if (mapping->table[i] != NULL) {
+			printf("%c = ", mapping->table[i]->key);
+			for (int j = 8; j >= 0; j--) {
+				printf("%d ", mapping->table[i]->new_mapping[j]);
+			}
+			printf("\n");
+		}
+	} */
 	//agora vamos escrever todos os bytes no arquivo, bit a bit;
 	int tree_size = 0;
 	get_number_of_nodes(huff_tree, &tree_size);
@@ -171,25 +177,37 @@ int main() {
 	printf("Tamanho do lixo: %d (", trash_size);
 	dec_to_bin(trash_size, 0, array, 13);
 	printf (")\n");
-	  
-	unsigned char c = 0, d = 0;
-	  for (int i = 16 - 1; i >= 0; i--) {
+	 
+	unsigned short int c = 0;
+	c = trash_size;
+	c <<= 13;
+	c += tree_size;
+
+	strcat(file_path, ".huff");
+	FILE *compressed_file = fopen(file_path, "wb"); // cria um arquivo e permite a escrita nele.
+	if (compressed_file == NULL) {
+		printf ("Não foi possível comprimir o arquivo\n");
+		return;
+	}
+    fprintf(compressed_file, "%c%c", c >> 8, c);
+
+	/*for (int i = 15; i >= 0; i--) {
 		if (i >= 8) { // Salvo em um dos bytes;
+			c <<= 1;
 			if (array[i] == 1) {
-				c = set_bit(c, i - 8);
+				c = set_bit(c, 0);
 			}
 		} else { // Salva no outro byte;
+			d <<= 1;
 			if (array[i] == 1) {
-				d = set_bit(d, i);
+				d = set_bit(d, 0);
 			}
 		}
-	}
+	}*/
 
-	  fprintf(compressed_file, "%c", c);
-	  fprintf(compressed_file, "%c", d);
+	printf(">>>>>>>\n");
 	print_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
 	
-	print_bits(arq, compressed_file, mapping, trash_size); 
-  
-	return 0;
+	print_bits(arq, compressed_file, mapping, trash_size);
+	return;
 }
