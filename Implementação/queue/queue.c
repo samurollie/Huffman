@@ -22,7 +22,7 @@ node *dequeue(queue *queue) {
 }
 
 void enqueue(queue* queue, node* new_node) {
-    if(queue->size == 0 || new_node->frequency < queue->head->frequency) {
+    if(queue->size == 0 || new_node->frequency <= queue->head->frequency) {
         new_node->next = queue->head;
         queue->head = new_node;
     } else {

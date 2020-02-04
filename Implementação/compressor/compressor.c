@@ -55,12 +55,12 @@ int changed_positions(int array[], int size) {
 }
 
 void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int trash_size) {
-	unsigned char c; // ok
-	unsigned char byte = 0; // ok
-	int i = 0; // ok
-	while (fscanf (file, "%c", &c) != EOF) { // ok
-		int h = (int) c; // ok
-		int n = changed_positions (mapping->table[h]->new_mapping, 9); // ok;
+	unsigned char c; 
+	unsigned char byte = 0; 
+	int i = 0; 
+	while (fscanf (file, "%c", &c) != EOF) { 
+		int h = (int) c; 
+		int n = changed_positions (mapping->table[h]->new_mapping, 9);
 		for(int j = 8; j >= 9 - n; j--) {
 			if (i == 8) { // Completei um byte! :)
 				fprintf(compressed_file, "%c", byte);
@@ -69,16 +69,20 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 			}
 
 			if (mapping->table[h]->new_mapping[j] == 1) {
-				// printf("aq\n");
-				byte = set_bit(byte, 0);
+				// printf("Setando o bit %d\n", 7 - i);
+				byte = set_bit(byte, 7 - i);
 			}
-			if (i < 7) byte <<= 1;
-			i++;
+			/* printf("Byte: ");
+			for(int i = 7; i >= 0; i--) {
+				printf("%d", is_bit_i_set(byte, i) ? 1 : 0);
+			}
+			printf ("\n");
+			i++; */
 		}
 	}
-	byte >>= 1; // por causa do ultimo loop;
-	byte <<= trash_size;
+	// printf("\n");
 	// fprintf(compressed_file, "%c", byte);
+	byte <<= trash_size;
 	if (trash_size != 0) {
 		fprintf(compressed_file, "%c", byte);
 	}
@@ -148,6 +152,10 @@ void compress() {
 			memset(path, -1, sizeof(path));
 			unsigned char item = mapping->table[i]->key;
 			int found = 0;
+
+			printf("aq\n");
+			printf("i = %d\n", i);
+
 			search_huff_tree(huff_tree, item, path, 8, &found);	
 
 			for(int e = 0; e < 9; e++) {
@@ -156,7 +164,7 @@ void compress() {
 		}
 	}
 	
-	/* for (int  i = 0; i < HASH_SIZE; i++) {
+	for (int  i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
 			printf("%c = ", mapping->table[i]->key);
 			for (int j = 8; j >= 0; j--) {
@@ -164,7 +172,8 @@ void compress() {
 			}
 			printf("\n");
 		}
-	} */
+	}
+
 	//agora vamos escrever todos os bytes no arquivo, bit a bit;
 	int tree_size = 0;
 	get_number_of_nodes(huff_tree, &tree_size);
@@ -195,23 +204,23 @@ void compress() {
 	}
     fprintf(compressed_file, "%c%c", c >> 8, c);
 
-	/*for (int i = 15; i >= 0; i--) {
-		if (i >= 8) { // Salvo em um dos bytes;
-			c <<= 1;
-			if (array[i] == 1) {
-				c = set_bit(c, 0);
-			}
-		} else { // Salva no outro byte;
-			d <<= 1;
-			if (array[i] == 1) {
-				d = set_bit(d, 0);
-			}
-		}
-	}*/
-
-	printf(">>>>>>>\n");
+	// printf(">>>>>>>\n");
 	print_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
 	
 	print_bits(arq, compressed_file, mapping, trash_size);
+	fclose(compressed_file);
+	/*compressed_file = fopen(file_path, "r");
+	unsigned char ch;
+	int count = 0;
+	while(fscanf(compressed_file, "%c", &ch) != EOF) {
+		if(count < tree_size + 2) {
+			count++;
+			continue;
+		}
+		for(int i = 7; i >= 0; i--) {
+			printf("%d", is_bit_i_set(ch, i) ? 1 : 0);
+		}
+		printf("|");
+	} */
 	return;
 }

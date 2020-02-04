@@ -43,10 +43,10 @@ node* join(queue* queue) {
 }
 
 node* build_tree (queue *myqueue) {
-	printf("Tamanho da lista (antes de construir): %d\n", myqueue->size);
-	printf("fila: \n");
-	print_queue(myqueue->head);
+	// printf("Tamanho da lista (antes de construir): %d\n", myqueue->size);
 	while(myqueue->size > 1) { 
+		/* printf("fila: \n");
+		print_queue(myqueue->head); */
 		node* father = join(myqueue);
 		enqueue(myqueue, father);
 	}
