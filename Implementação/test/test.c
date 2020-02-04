@@ -30,13 +30,13 @@ void test_tree(void) {
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == 'C');
-    CU_ASSERT(getc(arq) == 'B');
     CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == '*');
+    CU_ASSERT(getc(arq) == 'D');
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == 'F');
     CU_ASSERT(getc(arq) == 'E');
-    CU_ASSERT(getc(arq) == 'D');
+    CU_ASSERT(getc(arq) == '*');
+    CU_ASSERT(getc(arq) == 'B');
     CU_ASSERT(getc(arq) == 'A');
 }
 
