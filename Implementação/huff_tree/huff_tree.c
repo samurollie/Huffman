@@ -14,7 +14,7 @@ void print_tree (node* tree, int h) {
 	print_tree(tree->right, h + 1);
 }
 
-void print_on_file (FILE *f, node* tree) {
+void print_tree_on_file (FILE *f, node* tree) {
 	if (tree == NULL) {
 		return;
 	}
@@ -27,8 +27,8 @@ void print_on_file (FILE *f, node* tree) {
 	} else {
   		fprintf(f, "%c", tree->item);
 	}
-  	print_on_file(f, tree->left);
-  	print_on_file(f, tree->right);
+  	print_tree_on_file(f, tree->left);
+  	print_tree_on_file(f, tree->right);
 }
 
 node* join(queue* queue) { 

@@ -15,7 +15,7 @@ void print_tree (node* tree, int h);
 
 /** @param f:    arquivo a ser inscrito */
 /** @param tree: ponteiro para a árvore a ser impressa no arquivo */
-void print_on_file (FILE *f, node* tree);
+void print_tree_on_file (FILE *f, node* tree);
 
 /** @param queue: ponteiro para queuea a ser manipulada*/
 /** @return retorna um nó pai dos dois primeiros elementos da queuea, cuja frequência é a soma dos dois primeiros elementos da queuea*/
