@@ -21,7 +21,7 @@ struct queue {
     int size;
 };
 
-/** @param head: a cabeça da fila a ser imprimida */
+/** @param head: a cabeça da fila que deve ser impressa */
 void print_queue (node *head);
 
 /** @param queue:     fila que receberá um novo elemento*/
@@ -32,10 +32,10 @@ node *dequeue(queue *queue);
 
 /** @param frequency:  frequência do item a ser utilizado*/
 /** @param item:       item a ser utilizado*/
-/** @param queue:       ponteiro para a queuea*/
-/** @param left:  */
-/** @param right: */
-/** @return retorna um novo nó para queuea*/
+/** @param queue:      ponteiro para a queuea*/
+/** @param left:       ponteiro para o filho da esquerda*/
+/** @param right:      ponteiro para o filho da direita*/
+/** @return retorna um novo nó para queue*/
 node *create_node(lli frequency, unsigned char item, queue *queue, node *left, node *right);
 
 /** @param queue:     fila que receberá um novo elemento*/

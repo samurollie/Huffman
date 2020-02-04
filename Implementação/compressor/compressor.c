@@ -60,32 +60,33 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	int i = 0; 
 	while (fscanf (file, "%c", &c) != EOF) { 
 		int h = (int) c; 
-		int n = changed_positions (mapping->table[h]->new_mapping, 9);
+		int n = changed_positions(mapping->table[h]->new_mapping, 9);
 		for(int j = 8; j >= 9 - n; j--) {
 			if (i == 8) { // Completei um byte! :)
 				fprintf(compressed_file, "%c", byte);
 				byte = 0;
 				i = 0;
 			}
-
 			if (mapping->table[h]->new_mapping[j] == 1) {
 				// printf("Setando o bit %d\n", 7 - i);
-				byte = set_bit(byte, 7 - i);
+				byte = set_bit(byte, 0);
 			}
+			if (i < 7) byte <<= 1;
 			/* printf("Byte: ");
 			for(int i = 7; i >= 0; i--) {
 				printf("%d", is_bit_i_set(byte, i) ? 1 : 0);
 			}
-			printf ("\n");*/
+			printf ("\n"); */
 			i++; 
 		}
 	}
 	// printf("\n");
-	// fprintf(compressed_file, "%c", byte);
+	fprintf(compressed_file, "%c", byte);
+	// byte <<= 1;
 	byte <<= trash_size;
-	if (trash_size != 0) {
-		fprintf(compressed_file, "%c", byte);
-	}
+	// if (trash_size != 0) {
+	// 	fprintf(compressed_file, "%c", byte);
+	// }
 }
 
 void get_new_mapping(hash_table *mapping, node* huff_tree) {
@@ -209,7 +210,7 @@ void compress() {
     fprintf(compressed_file, "%c%c", c >> 8, c);
 
 	// printf(">>>>>>>\n");
-	print_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
+	print_tree_on_file(compressed_file, huff_tree); // função que imprimi a arvore no arquivo.
 	
 	print_bits(arq, compressed_file, mapping, trash_size);
 	fclose(compressed_file);
