@@ -11,11 +11,9 @@ int main () {
         switch (op) {
             case 1:
                 compress();
-                return 0;
             break;
             case 2:
                 decompress();
-                return 0;
             break;
             case 3:
                 return 0;

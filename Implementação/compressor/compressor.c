@@ -21,7 +21,7 @@ void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* f
 	if (*found != 1) path[i + 1] = -1;
 }
 
-void dec_to_bin(int beggin, int rest, int array[], int i) { // passar resto = 0;
+void dec_to_bin(int beggin, int rest, int array[], int i) {
 	if(beggin >= 1) { 
 		rest = beggin % 2;
 		beggin = beggin / 2;
@@ -35,7 +35,7 @@ void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós
 	if (tree == NULL) {
 		return;
 	}
-	if (is_leaf(tree) == 1 && (tree -> item == '*' || tree -> item == '\\')) {
+	if (is_leaf(tree) && (tree -> item == '*' || tree -> item == '\\')) {
 		(*size)++;
 	}
 	(*size)++;
@@ -76,8 +76,8 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 			for(int i = 7; i >= 0; i--) {
 				printf("%d", is_bit_i_set(byte, i) ? 1 : 0);
 			}
-			printf ("\n");
-			i++; */
+			printf ("\n");*/
+			i++; 
 		}
 	}
 	// printf("\n");
@@ -85,6 +85,26 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	byte <<= trash_size;
 	if (trash_size != 0) {
 		fprintf(compressed_file, "%c", byte);
+	}
+}
+
+void get_new_mapping(hash_table *mapping, node* huff_tree) {
+	for (int i = 0; i < HASH_SIZE; i++) {
+		if (mapping->table[i] != NULL) {
+			int path[9];
+			memset(path, -1, sizeof(path));
+			unsigned char item = mapping->table[i]->key;
+			int found = 0;
+
+			printf("aq\n");
+			printf("i = %d\n", i);
+
+			search_huff_tree(huff_tree, item, path, 8, &found);	
+
+			for(int e = 0; e < 9; e++) {
+				mapping->table[i]->new_mapping[e] = path[e];
+			}
+		}
 	}
 }
 
@@ -113,57 +133,7 @@ void get_frequency(FILE *file, hash_table *mapping) {
 	  }
 }
 
-void compress() {
-	char file_path[5000];
-	printf("Digite o caminho para o arquivo que deseja comprimir: ");
-	scanf ("%[^\n]s", file_path);
-	printf("%s\n", file_path);
-
-	FILE *arq; 
-	arq = fopen(file_path, "rb");
-	if (arq == NULL) {
-		printf ("Arquivo não encontrado\n");
-	  	return;
-	}
-	
-	hash_table* mapping = create_hash_table();
-	get_frequency(arq, mapping);
-
-	DEBUG printf("HASH TABLE::::: \n");
-	DEBUG print_hash_table(mapping);
-	DEBUG printf("\n");
-
-	queue *myqueue = create_queue();
-	for (int i = 0; i < 256; i++) {
-		if (mapping->table[i] != NULL) {
-			myqueue = add(myqueue, mapping->table[i]->key, mapping->table[i]->frequency);
-		}
-	}
-
-	node *huff_tree = build_tree(myqueue);
-	DEBUG print_tree(huff_tree, 0);
-	
-	fclose(arq);
-	arq = fopen(file_path, "rb");
-	
-	for (int i = 0; i < HASH_SIZE; i++) {
-		if (mapping->table[i] != NULL) {
-			int path[9];
-			memset(path, -1, sizeof(path));
-			unsigned char item = mapping->table[i]->key;
-			int found = 0;
-
-			printf("aq\n");
-			printf("i = %d\n", i);
-
-			search_huff_tree(huff_tree, item, path, 8, &found);	
-
-			for(int e = 0; e < 9; e++) {
-				mapping->table[i]->new_mapping[e] = path[e];
-			}
-		}
-	}
-	
+void print_new_mapping(hash_table *mapping) {
 	for (int  i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
 			printf("%c = ", mapping->table[i]->key);
@@ -173,8 +143,42 @@ void compress() {
 			printf("\n");
 		}
 	}
+}
 
-	//agora vamos escrever todos os bytes no arquivo, bit a bit;
+queue *create_queue_from_hash(hash_table *mapping, queue *queue) {
+	for (int i = 0; i < 256; i++) {
+		if (mapping->table[i] != NULL) {
+			queue = add(queue, mapping->table[i]->key, mapping->table[i]->frequency);
+		}
+	}
+	return queue;
+}
+
+void compress() {
+	char file_path[5000];
+	printf("Digite o caminho para o arquivo que deseja comprimir: ");
+	scanf ("%[^\n]s", file_path);
+	printf("%s\n", file_path);
+
+	FILE *arq = get_file(file_path);
+	
+	hash_table* mapping = create_hash_table();
+	get_frequency(arq, mapping);
+
+	DEBUG printf("HASH TABLE::::: \n");
+	DEBUG print_hash_table(mapping);
+	DEBUG printf("\n");
+
+	queue *myqueue = create_queue();
+	myqueue = create_queue_from_hash(mapping, myqueue);
+
+	node *huff_tree = build_tree(myqueue);
+	DEBUG print_tree(huff_tree, 0);
+	
+	rewind(arq);
+	get_new_mapping(mapping, huff_tree);
+	DEBUG print_new_mapping(mapping);
+
 	int tree_size = 0;
 	get_number_of_nodes(huff_tree, &tree_size);
 
@@ -209,6 +213,7 @@ void compress() {
 	
 	print_bits(arq, compressed_file, mapping, trash_size);
 	fclose(compressed_file);
+	fclose(arq);
 	/*compressed_file = fopen(file_path, "r");
 	unsigned char ch;
 	int count = 0;
@@ -217,9 +222,7 @@ void compress() {
 			count++;
 			continue;
 		}
-		for(int i = 7; i >= 0; i--) {
-			printf("%d", is_bit_i_set(ch, i) ? 1 : 0);
-		}
+		printar_byte(ch);
 		printf("|");
 	} */
 	return;

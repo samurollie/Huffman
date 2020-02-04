@@ -66,9 +66,10 @@ int get(hash_table *ht, unsigned char key) {
 
 hash_node* add_node(hash_node* head, lli frequency, unsigned char key) {
     hash_node* new_node = (hash_node*) malloc(sizeof(hash_node));
-    new_node ->next = head;
+    new_node->next = head;
     new_node->frequency = frequency;
     new_node->key = key;
+    memset(new_node->new_mapping, -1, sizeof(new_node->new_mapping));
     return new_node;
 }
 

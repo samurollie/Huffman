@@ -14,4 +14,8 @@ unsigned char set_bit(unsigned char c, int i);
 /** @return retorna se o bit está setado na posição i ou não*/
 int is_bit_i_set(unsigned short c, int i);
 
+void printar_byte(unsigned char c);
+
+FILE* get_file(char* msg);
+
 #endif

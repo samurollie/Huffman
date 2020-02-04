@@ -125,5 +125,7 @@ void decompress () {
     }
 
     the_walking_tree(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.
+    fclose(original);
+    fclose(arq);
     return;
 }

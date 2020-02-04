@@ -11,6 +11,37 @@ int clean_suite(void) {
     return 0; 
 }
 
+void test_hash(void) {
+    hash_table *hash = create_hash_table();
+    CU_ASSERT_PTR_NOT_NULL(hash);
+    for (int i = 0; i < HASH_SIZE; i++) {
+        CU_ASSERT_PTR_NULL(hash->table[i]);
+    }
+
+    put(hash, 'A', 6);
+    put(hash, 'B', 5);
+    put(hash, 'C', 4);
+    put(hash, 'D', 3);
+    put(hash, 'E', 2);
+    put(hash, 'F', 1);
+
+    CU_ASSERT(hash->table['A']->key == 'A');
+    CU_ASSERT(hash->table['A']->frequency == 6);
+    CU_ASSERT(hash->table['B']->key == 'B');
+    CU_ASSERT(hash->table['B']->frequency == 5);
+    CU_ASSERT(hash->table['C']->key == 'C');
+    CU_ASSERT(hash->table['C']->frequency == 4);
+    CU_ASSERT(hash->table['D']->key == 'D');
+    CU_ASSERT(hash->table['D']->frequency == 3);
+    CU_ASSERT(hash->table['E']->key == 'E');
+    CU_ASSERT(hash->table['E']->frequency == 2);
+    CU_ASSERT(hash->table['F']->key == 'F');
+    CU_ASSERT(hash->table['F']->frequency == 1);
+    CU_ASSERT(hash->table['G'] == NULL);
+
+        
+}
+
 void test_tree(void) {
     queue *queue = create_queue();
     add(queue, 'A', 6);
@@ -30,11 +61,9 @@ void test_tree(void) {
 
 void test_queue(void) {
     queue *queue = create_queue();
-    CU_ASSERT_PTR_NOT_NULL(queue); // verifica se a queuea não é NULL.
+    CU_ASSERT_PTR_NOT_NULL(queue); // verifica se a queue não é NULL.
     CU_ASSERT(queue->size == 0); // verifica se o tamanho é zero.
 
-
-    /*VEFICA SE ADICIONA CERTO ::::: */
     add(queue, 'A', 6); // nessa função criamos um nó e enfileiramos ordenadamente.
     CU_ASSERT(queue->head->item == 'A');
     add(queue, 'B', 5);
@@ -47,10 +76,7 @@ void test_queue(void) {
     CU_ASSERT(queue->head->item == 'E');
     add(queue, 'F', 1);
     CU_ASSERT(queue->head->item == 'F');
-    
-    // * e \\
 
-    /*VEFICA SE DESENFILEIRA CERTO ::::: */
     CU_ASSERT(queue->head == dequeue(queue));
     CU_ASSERT(queue->head == dequeue(queue));
     CU_ASSERT(queue->head == dequeue(queue));
@@ -77,16 +103,21 @@ int main () {
 
     /* Se suite fosse uma fila, poderia dizer que a função
     CU_add_test enfileira um caso de teste */
-    if ((CU_add_test(pSuite, "\n\n... Testing Queue Functions...\n\n", test_queue) == NULL)) {
+    if((CU_add_test(pSuite, "\n\nTesting Queue Functions...\n\n", test_queue) == NULL)) {
         CU_cleanup_registry();
         return CU_get_error();
     }
 
-    if((CU_add_test(pSuite, "\n\n... Testing Tree...\n\n", test_tree) == NULL)) {
+    if((CU_add_test(pSuite, "\n\nTesting Tree...\n\n", test_tree) == NULL)) {
         CU_cleanup_registry();
         return CU_get_error();
     }
     
+    if((CU_add_test(pSuite, "\n\nTesting Hash...\n\n", test_hash) == NULL)) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
     CU_basic_run_tests();
     CU_cleanup_registry();
     return CU_get_error();

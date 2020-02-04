@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define HASH_SIZE 256
 
@@ -48,7 +49,7 @@ int get(hash_table *ht, unsigned char key);
 /** @return retorna o novo nó a ser adicionado na hash*/
 hash_node* add_node(hash_node* head, lli frequency, unsigned char key);
 
-/** @param  head:      ponteiro para hash table a ser manipulada para inserção*/
+/** @param  ht:        ponteiro para hash table a ser manipulada para inserção*/
 /** @param  key:       elemento de inserção*/
 /** @param  frequency: frequência do elemento a ser inserido*/
 void put (hash_table *ht, unsigned char key, lli frequency);
