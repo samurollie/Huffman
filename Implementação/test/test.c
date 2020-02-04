@@ -14,18 +14,17 @@ int clean_suite(void) {
 void test_tree(void) {
     queue *queue = create_queue();
     add(queue, 'A', 6);
-    // add(queue, 'B', 5);
-    // add(queue, 'C', 4);
-    // add(queue, 'D', 3);
-    // add(queue, 'E', 2);
-    // add(queue, 'F', 1);
-    // node *tree = create_node(6, 'A', queue);
-    // node *tree = create_node(5, 'B', queue);
-    // node *tree = create_node(4, 'C', queue);
-    // node *tree = create_node(3, 'D', queue);
-    // node *tree = create_node(2, 'E', queue);
-    // node *tree = create_node(1, 'F', queue);
-    // CU_ASSERT_PTR_NOT_NULL(tree);
+    add(queue, 'B', 5);
+    add(queue, 'C', 4);
+    add(queue, 'D', 3);
+    add(queue, 'E', 2);
+    add(queue, 'F', 1);
+    node *tree = build_tree(queue);
+    CU_ASSERT_PTR_NOT_NULL(tree);
+    CU_ASSERT(tree->head->frequency == 21);
+    CU_ASSERT(tree->head->item == '*');
+
+
 }
 
 void test_queue(void) {
