@@ -122,6 +122,7 @@ void decompress () {
     FILE *original = fopen(original_file, "w");
     if (original == NULL) {
         printf("Não foi possível descompactar o arquivo.\n");
+        return;
     }
 
     the_walking_tree(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.

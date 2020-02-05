@@ -50,24 +50,24 @@ void test_tree(void) {
     add(queue, 'D', 3);
     add(queue, 'E', 2);
     add(queue, 'F', 1);
+
     node *tree = build_tree(queue);
     CU_ASSERT_PTR_NOT_NULL(tree);
-    CU_ASSERT(tree->head->frequency == 21);
-    CU_ASSERT(tree->head->item == '*');
-    FILE *arq;
-    *arq = fopen("test.txt", "w");
-    print_tree_on_file(arq, tree);
+    CU_ASSERT(tree->frequency == 21);
+    CU_ASSERT(tree->item == '*');
 
+    FILE *arq = fopen("test.txt", "w");
+    print_tree_on_file(arq, tree);
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == 'C');
+    CU_ASSERT(getc(arq) == 'B');
     CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == 'D');
+    CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == '*');
     CU_ASSERT(getc(arq) == 'F');
     CU_ASSERT(getc(arq) == 'E');
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == 'B');
+    CU_ASSERT(getc(arq) == 'D');
     CU_ASSERT(getc(arq) == 'A');
 }
 

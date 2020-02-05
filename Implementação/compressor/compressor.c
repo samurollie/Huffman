@@ -156,12 +156,21 @@ queue *create_queue_from_hash(hash_table *mapping, queue *queue) {
 }
 
 void compress() {
+	FILE *arq;
 	char file_path[5000];
-	printf("Digite o caminho para o arquivo que deseja comprimir: ");
-	scanf ("%[^\n]s", file_path);
-	printf("%s\n", file_path);
 
-	FILE *arq = get_file(file_path);
+	while (1) {
+		printf("Digite o caminho para o arquivo que deseja comprimir: ");
+		scanf ("%[^\n]s", file_path);
+		printf("%s\n", file_path);
+
+		arq = fopen(file_path, "rb");
+		if (arq == NULL) {
+			printf("Não foi possivel encontrar o arquivo!\n");
+		} else {
+			break;
+		}
+	}
 	
 	hash_table* mapping = create_hash_table();
 	get_frequency(arq, mapping);
