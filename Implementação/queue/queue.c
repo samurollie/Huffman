@@ -46,7 +46,7 @@ node *create_node(lli frequency, unsigned char item, queue *queue, node* left, n
     return new_node;
 }
 
-queue *add (queue *queue, unsigned char item, lli frequency) {
+queue *add_on_queue (queue *queue, unsigned char item, lli frequency) {
     node *new_node = create_node(frequency, item, queue, NULL, NULL);
     enqueue(queue, new_node);
     return queue;

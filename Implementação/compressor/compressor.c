@@ -149,7 +149,7 @@ void print_new_mapping(hash_table *mapping) {
 queue *create_queue_from_hash(hash_table *mapping, queue *queue) {
 	for (int i = 0; i < 256; i++) {
 		if (mapping->table[i] != NULL) {
-			queue = add(queue, mapping->table[i]->key, mapping->table[i]->frequency);
+			queue = add_on_queue(queue, mapping->table[i]->key, mapping->table[i]->frequency);
 		}
 	}
 	return queue;

@@ -19,37 +19,65 @@ void test_hash(void) {
     }
 
     put(hash, 'A', 6);
+    CU_ASSERT(contains_key(hash, 'A') == 1); // se esse valor já foi adicionado, retorna 1;
+    CU_ASSERT(contains_key(hash, 'B') == 0); //ira retornar zero, pois ainda não foi adicionado.
     put(hash, 'B', 5);
+    CU_ASSERT(contains_key(hash, 'B') == 1);
     put(hash, 'C', 4);
     put(hash, 'D', 3);
     put(hash, 'E', 2);
     put(hash, 'F', 1);
 
-    CU_ASSERT(hash->table['A']->key == 'A');
+    CU_ASSERT(get(hash, 'A') != -1);
+    CU_ASSERT(get(hash, 'A') == 6);
     CU_ASSERT(hash->table['A']->frequency == 6);
-    CU_ASSERT(hash->table['B']->key == 'B');
-    CU_ASSERT(hash->table['B']->frequency == 5);
-    CU_ASSERT(hash->table['C']->key == 'C');
-    CU_ASSERT(hash->table['C']->frequency == 4);
-    CU_ASSERT(hash->table['D']->key == 'D');
-    CU_ASSERT(hash->table['D']->frequency == 3);
-    CU_ASSERT(hash->table['E']->key == 'E');
-    CU_ASSERT(hash->table['E']->frequency == 2);
-    CU_ASSERT(hash->table['F']->key == 'F');
-    CU_ASSERT(hash->table['F']->frequency == 1);
-    CU_ASSERT(hash->table['G'] == NULL);
 
-        
+    CU_ASSERT(get(hash, 'B') != -1);
+    CU_ASSERT(get(hash, 'B') == 5);
+    CU_ASSERT(hash->table['B']->frequency == 5);
+
+    CU_ASSERT(get(hash, 'C') != -1);
+    CU_ASSERT(get(hash, 'C') == 4);
+    CU_ASSERT(hash->table['C']->frequency == 4);
+
+    CU_ASSERT(get(hash, 'D') != -1);
+    CU_ASSERT(get(hash, 'D') == 3);
+    CU_ASSERT(hash->table['D']->frequency == 3);
+
+    CU_ASSERT(get(hash, 'E') != -1);
+    CU_ASSERT(get(hash, 'E') == 2);
+    CU_ASSERT(hash->table['E']->frequency == 2);
+
+    CU_ASSERT(get(hash, 'F') != -1);
+    CU_ASSERT(get(hash, 'F') == 1);
+    CU_ASSERT(hash->table['F']->frequency == 1);
+
+    CU_ASSERT(get(hash, 'G') == -1);
+    CU_ASSERT_PTR_NULL(hash->table['G']);
+
+    CU_ASSERT(get(hash, 'H') == -1);
+    CU_ASSERT_PTR_NULL(hash->table['H']);
+
+    CU_ASSERT(get(hash, 'I') == -1);
+    CU_ASSERT_PTR_NULL(hash->table['I']);
+
+    remove_value(hash, 'A');
+    remove_value(hash, 'B');
+    remove_value(hash, 'C');
+    CU_ASSERT(get(hash, 'A') == -1); // após removido, essa key não deve ser encontrada.
+    CU_ASSERT(get(hash, 'B') == -1);
+    CU_ASSERT(get(hash, 'C') == -1);
+
 }
 
 void test_tree(void) {
     queue *queue = create_queue();
-    add(queue, 'A', 6);
-    add(queue, 'B', 5);
-    add(queue, 'C', 4);
-    add(queue, 'D', 3);
-    add(queue, 'E', 2);
-    add(queue, 'F', 1);
+    add_on_queue(queue, 'A', 6);
+    add_on_queue(queue, 'B', 5);
+    add_on_queue(queue, 'C', 4);
+    add_on_queue(queue, 'D', 3);
+    add_on_queue(queue, 'E', 2);
+    add_on_queue(queue, 'F', 1);
 
     node *tree = build_tree(queue);
     CU_ASSERT_PTR_NOT_NULL(tree);
@@ -58,17 +86,44 @@ void test_tree(void) {
 
     FILE *arq = fopen("test.txt", "w");
     print_tree_on_file(arq, tree);
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == 'C');
-    CU_ASSERT(getc(arq) == 'B');
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == '*');
-    CU_ASSERT(getc(arq) == 'F');
-    CU_ASSERT(getc(arq) == 'E');
-    CU_ASSERT(getc(arq) == 'D');
-    CU_ASSERT(getc(arq) == 'A');
+    unsigned char caracter;
+    int i;
+    for(i = 0; i < 2; i++) {
+        fscanf(arq, "%c", &caracter);
+    }
+    while(fscanf(arq, "%c", &caracter) != EOF) {
+        if (i == 2) {
+            CU_ASSERT(caracter == '*');
+            i += 1;
+        } else if (i == 3) {
+            CU_ASSERT(caracter == 'C');
+            i += 1;
+        } else if (i == 4) {
+            CU_ASSERT(caracter == 'B');
+            i += 1;
+        } else if (i == 5) {
+            CU_ASSERT(caracter == '*');
+            i += 1;
+        } else if (i == 6) {
+            CU_ASSERT(caracter == '*');
+            i += 1;
+        } else if (i == 7) {
+            CU_ASSERT(caracter == '*');
+            i += 1;
+        } else if (i == 8) {
+            CU_ASSERT(caracter == 'F');
+            i += 1;
+        } else if (i == 9) {
+            CU_ASSERT(caracter == 'E');
+            i += 1;
+        } else if (i == 10) {
+            CU_ASSERT(caracter == 'B');
+            i += 1;
+        } else if (i == 11) {
+            CU_ASSERT(caracter == 'A');
+            i += 1;
+        }
+    }
 }
 
 void test_queue(void) {
@@ -76,17 +131,17 @@ void test_queue(void) {
     CU_ASSERT_PTR_NOT_NULL(queue); // verifica se a queue não é NULL.
     CU_ASSERT(queue->size == 0); // verifica se o tamanho é zero.
 
-    add(queue, 'A', 6); // nessa função criamos um nó e enfileiramos ordenadamente.
+    add_on_queue(queue, 'A', 6); // nessa função criamos um nó e enfileiramos ordenadamente.
     CU_ASSERT(queue->head->item == 'A');
-    add(queue, 'B', 5);
+    add_on_queue(queue, 'B', 5);
     CU_ASSERT(queue->head->item == 'B');
-    add(queue, 'C', 4);
+    add_on_queue(queue, 'C', 4);
     CU_ASSERT(queue->head->item == 'C');
-    add(queue, 'D', 3);
+    add_on_queue(queue, 'D', 3);
     CU_ASSERT(queue->head->item == 'D');
-    add(queue, 'E', 2);
+    add_on_queue(queue, 'E', 2);
     CU_ASSERT(queue->head->item == 'E');
-    add(queue, 'F', 1);
+    add_on_queue(queue, 'F', 1);
     CU_ASSERT(queue->head->item == 'F');
 
     CU_ASSERT(queue->head == dequeue(queue));
@@ -100,7 +155,7 @@ void test_queue(void) {
 
 int main () {
     CU_pSuite pSuite = NULL; // cria a variavel do tipo CU_pSuite.
-
+    
     /* Se essa função não conseguir inicializar, retorna um erro.
     Caso consiga ela retorna a variavel CUE_SUCCESS. */
     if (CU_initialize_registry() != CUE_SUCCESS) {
@@ -114,7 +169,7 @@ int main () {
     }
 
     /* Se suite fosse uma fila, poderia dizer que a função
-    CU_add_test enfileira um caso de teste */
+    CU_add_on_queue_test enfileira um caso de teste */
     if((CU_add_test(pSuite, "\n\nTesting Queue Functions...\n\n", test_queue) == NULL)) {
         CU_cleanup_registry();
         return CU_get_error();

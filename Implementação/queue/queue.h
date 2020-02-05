@@ -42,7 +42,7 @@ node *create_node(lli frequency, unsigned char item, queue *queue, node *left, n
 /** @param item:      o item que vai ser salvo na fila */
 /** @param frequency: a frequencia do item*/
 /** @return retorna um novo ponteiro para a fila*/
-queue *add (queue *queue, unsigned char item, lli frequency);
+queue *add_on_queue (queue *queue, unsigned char item, lli frequency);
 
 /** @return retorna uma fila vazia */
 queue *create_queue();

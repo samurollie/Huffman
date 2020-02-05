@@ -47,7 +47,7 @@ int get(hash_table *ht, unsigned char key);
 /** @param frequency: frequência do elemento a ser inserido*/
 /** @param key:       posição de inserção*/
 /** @return retorna o novo nó a ser adicionado na hash*/
-hash_node* add_node(hash_node* head, lli frequency, unsigned char key);
+hash_node* add_on_hash(hash_node* head, lli frequency, unsigned char key);
 
 /** @param  ht:        ponteiro para hash table a ser manipulada para inserção*/
 /** @param  key:       elemento de inserção*/

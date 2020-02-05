@@ -64,7 +64,7 @@ int get(hash_table *ht, unsigned char key) {
     return -1;
 }
 
-hash_node* add_node(hash_node* head, lli frequency, unsigned char key) {
+hash_node* add_on_hash(hash_node* head, lli frequency, unsigned char key) {
     hash_node* new_node = (hash_node*) malloc(sizeof(hash_node));
     new_node->next = head;
     new_node->frequency = frequency;
@@ -76,7 +76,7 @@ hash_node* add_node(hash_node* head, lli frequency, unsigned char key) {
 // Adiciona um novo valor na hash table;
 void put (hash_table *ht, unsigned char key, lli frequency) {
     int h = (int) key; // Esse aqui que e o meu calculo que diz qual vai ser a posição no array que eu vou adicionar o elemento  
-    ht->table[h] = add_node(ht->table[h], frequency, key);
+    ht->table[h] = add_on_hash(ht->table[h], frequency, key);
     return;
 }
 
