@@ -10,8 +10,7 @@
 int is_leaf(node *tree);
 
 /** @param tree: ponteiro para a árvore a ser impressa */
-/** @param h:    altura dos respectivos nós */
-void print_tree (node* tree, int h);
+void print_tree (node* tree);
 
 /** @param f:    arquivo a ser inscrito */
 /** @param tree: ponteiro para a árvore a ser impressa no arquivo */

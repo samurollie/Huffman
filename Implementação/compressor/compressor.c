@@ -1,6 +1,6 @@
 #include "compressor.h"
 
-#define DEBUG if(0)
+#define DEBUG if(1)
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree == NULL) {
@@ -43,7 +43,6 @@ void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós
 	get_number_of_nodes(tree->right, size);
 }
 
-// Calcula quantos bits o caracter ocupa no novo mapeamento
 int changed_positions(int array[], int size) {
 	int total = 0;
 	  for(int i = 0; i < size; i++) {
@@ -58,20 +57,24 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	unsigned char c; 
 	unsigned char byte = 0; 
 	int i = 0; 
+
 	while (fscanf (file, "%c", &c) != EOF) { 
 		int h = (int) c; 
 		int n = changed_positions(mapping->table[h]->new_mapping, 9);
+	
 		for(int j = 8; j >= 9 - n; j--) {
 			if (i == 8) { // Completei um byte! :)
 				fprintf(compressed_file, "%c", byte);
 				byte = 0;
 				i = 0;
 			}
+	
 			if (mapping->table[h]->new_mapping[j] == 1) {
-				// printf("Setando o bit %d\n", 7 - i);
+				byte <<= 1;
 				byte = set_bit(byte, 0);
+			} else if (mapping->table[h]->new_mapping[j] == 0) {
+				byte <<= 1;
 			}
-			if (i < 7) byte <<= 1;
 			/* printf("Byte: ");
 			for(int i = 7; i >= 0; i--) {
 				printf("%d", is_bit_i_set(byte, i) ? 1 : 0);
@@ -80,13 +83,9 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 			i++; 
 		}
 	}
-	// printf("\n");
-	fprintf(compressed_file, "%c", byte);
-	// byte <<= 1;
+	
 	byte <<= trash_size;
-	// if (trash_size != 0) {
-	// 	fprintf(compressed_file, "%c", byte);
-	// }
+	fprintf(compressed_file, "%c", byte);
 }
 
 void get_new_mapping(hash_table *mapping, node* huff_tree) {
@@ -160,13 +159,12 @@ void compress() {
 	char file_path[5000];
 
 	while (1) {
-		printf("Digite o caminho para o arquivo que deseja comprimir: ");
+		printf("\nDigite o caminho para o arquivo que deseja comprimir:\n");
 		scanf ("%[^\n]s", file_path);
-		printf("%s\n", file_path);
-
 		arq = fopen(file_path, "rb");
 		if (arq == NULL) {
-			printf("Não foi possivel encontrar o arquivo!\n");
+			printf("\nNão foi possivel encontrar o arquivo!\n");
+			getchar();
 		} else {
 			break;
 		}
@@ -175,7 +173,7 @@ void compress() {
 	hash_table* mapping = create_hash_table();
 	get_frequency(arq, mapping);
 
-	DEBUG printf("HASH TABLE::::: \n");
+	DEBUG printf("\nHASH TABLE::::: \n");
 	DEBUG print_hash_table(mapping);
 	DEBUG printf("\n");
 
@@ -183,7 +181,7 @@ void compress() {
 	myqueue = create_queue_from_hash(mapping, myqueue);
 
 	node *huff_tree = build_tree(myqueue);
-	DEBUG print_tree(huff_tree, 0);
+	DEBUG print_tree(huff_tree);
 	
 	rewind(arq);
 	get_new_mapping(mapping, huff_tree);
@@ -197,14 +195,15 @@ void compress() {
 	int array[16];
 	memset(array, 0, sizeof(array)); 
 
-	printf ("Tamanho da árvore: %d (", tree_size);
-	dec_to_bin(tree_size, 0, array, 0);
-	printf (")\n");
+	DEBUG printf ("Tamanho da árvore: %d (", tree_size);
+	DEBUG dec_to_bin(tree_size, 0, array, 0);
+	DEBUG printf (")\n");
 	
-	printf("Tamanho do lixo: %d (", trash_size);
-	dec_to_bin(trash_size, 0, array, 13);
-	printf (")\n");
+	DEBUG printf("Tamanho do lixo: %d (", trash_size);
+	DEBUG dec_to_bin(trash_size, 0, array, 13);
+	DEBUG printf (")\n");
 	 
+	printf("\nCompactando %s...\n", file_path);
 	unsigned short int c = 0;
 	c = trash_size;
 	c <<= 13;
@@ -213,7 +212,7 @@ void compress() {
 	strcat(file_path, ".huff");
 	FILE *compressed_file = fopen(file_path, "wb"); // cria um arquivo e permite a escrita nele.
 	if (compressed_file == NULL) {
-		printf ("Não foi possível comprimir o arquivo\n");
+		printf ("Não foi possível compactar %s\n", file_path - 6);
 		return;
 	}
     fprintf(compressed_file, "%c%c", c >> 8, c);
