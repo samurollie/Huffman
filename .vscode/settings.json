@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "huff_tree.h": "c"
+        "huff_tree.h": "c",
+        "hash.h": "c"
     }
 }

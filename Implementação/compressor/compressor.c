@@ -1,33 +1,33 @@
 #include "compressor.h"
 
-#define DEBUG if(1)
+#define DEBUG if(0)
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
-	if (tree == NULL) {
-		if (*found != 1) path[i + 1] = -1;
-		return;
-	} else if (is_leaf(tree) && tree->item == item) {
-		*found = 1;
-		return;
+	if (tree != NULL) {
+		if (is_leaf(tree) && tree->item == item) {
+			*found = 1;
+			return;
+		}
+
+		if(*found != 1) {
+			path[i] = 0;
+			search_huff_tree(tree->left, item, path, i + 1, found);
+		} 	
+		
+		if(*found != 1) {
+			path[i] = 1;
+			search_huff_tree(tree->right, item, path, i + 1, found);
+		}
 	}
-	if(*found != 1) {
-	  path[i] = 0;
-	} 	
-	search_huff_tree(tree->left, item, path, i - 1, found);
-	if(*found != 1) {
-	  path[i] = 1;
-	}
-	search_huff_tree(tree->right, item, path, i - 1, found);
-	if (*found != 1) path[i + 1] = -1;
+	if (*found != 1) path[i - 1] = -1;
 }
 
-void dec_to_bin(int beggin, int rest, int array[], int i) {
-	if(beggin >= 1) { 
-		rest = beggin % 2;
-		beggin = beggin / 2;
-		dec_to_bin(beggin, 0, array, i+1);
+void dec_to_bin(int number, int rest) {
+	if(number >= 1) { 
+		rest = number % 2;
+		number = number / 2;
+		dec_to_bin(number, 0);
 		printf ("%d", rest);
-		array[i] = rest;
 	}
 }
 
@@ -43,9 +43,9 @@ void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós
 	get_number_of_nodes(tree->right, size);
 }
 
-int changed_positions(int array[], int size) {
+int mapping_size(int array[]) {
 	int total = 0;
-	  for(int i = 0; i < size; i++) {
+	  for(int i = 0; i < 9; i++) {
 		if (array[i] != -1) {
 			total++;
 		}
@@ -60,9 +60,9 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 
 	while (fscanf (file, "%c", &c) != EOF) { 
 		int h = (int) c; 
-		int n = changed_positions(mapping->table[h]->new_mapping, 9);
+		int n = mapping_size(mapping->table[h]->new_mapping);
 	
-		for(int j = 8; j >= 9 - n; j--) {
+		for(int j = 0; j < n; j++) {
 			if (i == 8) { // Completei um byte! :)
 				fprintf(compressed_file, "%c", byte);
 				byte = 0;
@@ -75,12 +75,13 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 			} else if (mapping->table[h]->new_mapping[j] == 0) {
 				byte <<= 1;
 			}
-			/* printf("Byte: ");
-			for(int i = 7; i >= 0; i--) {
-				printf("%d", is_bit_i_set(byte, i) ? 1 : 0);
-			}
-			printf ("\n"); */
 			i++; 
+		}
+
+		if (i == 8) { // Completei um byte! :)
+			fprintf(compressed_file, "%c", byte);
+			byte = 0;
+			i = 0;
 		}
 	}
 	
@@ -93,17 +94,12 @@ void get_new_mapping(hash_table *mapping, node* huff_tree) {
 		if (mapping->table[i] != NULL) {
 			int path[9];
 			memset(path, -1, sizeof(path));
-			unsigned char item = mapping->table[i]->key;
+			unsigned char item = *(unsigned char*) mapping->table[i]->key;
 			int found = 0;
+			// printf("i = %d\n", i);
 
-			printf("aq\n");
-			printf("i = %d\n", i);
-
-			search_huff_tree(huff_tree, item, path, 8, &found);	
-
-			for(int e = 0; e < 9; e++) {
-				mapping->table[i]->new_mapping[e] = path[e];
-			}
+			/* passa o i = 8, pois estamos preenchendo de tras pra frente. */
+			search_huff_tree(huff_tree, item, mapping->table[i]->new_mapping, 0, &found);
 		}
 	}
 }
@@ -113,7 +109,7 @@ int get_trash_size(hash_table *mapping) {
 	int bits_usados = 0;
 	for (i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) { // Tenho que multiplicar quantos bits um unico caracter daquele ocupa pela quantidade de vezes que ele aparece no texto
-			int n = changed_positions(mapping->table[i]->new_mapping, 9);
+			int n = mapping_size(mapping->table[i]->new_mapping);
 			int m = mapping->table[i]->frequency;
 			bits_usados += n * m; 
 		}
@@ -127,6 +123,7 @@ void get_frequency(FILE *file, hash_table *mapping) {
 		int h = (int) unit;
 		if (!contains_key(mapping, unit)) { // Se eu ainda não adicionei aquele caracter;
 			put(mapping, unit, 1);
+			printf("aq na get_frequency\n");
 		} else {
 			mapping->table[h]->frequency++;
 		}
@@ -136,7 +133,7 @@ void get_frequency(FILE *file, hash_table *mapping) {
 void print_new_mapping(hash_table *mapping) {
 	for (int  i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
-			printf("%c = ", mapping->table[i]->key);
+			printf("%c = ", *(unsigned char*)mapping->table[i]->key);
 			for (int j = 8; j >= 0; j--) {
 				printf("%d ", mapping->table[i]->new_mapping[j]);
 			}
@@ -148,7 +145,7 @@ void print_new_mapping(hash_table *mapping) {
 queue *create_queue_from_hash(hash_table *mapping, queue *queue) {
 	for (int i = 0; i < 256; i++) {
 		if (mapping->table[i] != NULL) {
-			queue = add_on_queue(queue, mapping->table[i]->key, mapping->table[i]->frequency);
+			queue = add_on_queue(queue,*(unsigned char*) mapping->table[i]->key, mapping->table[i]->frequency);
 		}
 	}
 	return queue;
@@ -192,15 +189,12 @@ void compress() {
 
 	int trash_size = get_trash_size(mapping);
 
-	int array[16];
-	memset(array, 0, sizeof(array)); 
-
 	DEBUG printf ("Tamanho da árvore: %d (", tree_size);
-	DEBUG dec_to_bin(tree_size, 0, array, 0);
+	DEBUG dec_to_bin(tree_size, 0);
 	DEBUG printf (")\n");
 	
 	DEBUG printf("Tamanho do lixo: %d (", trash_size);
-	DEBUG dec_to_bin(trash_size, 0, array, 13);
+	DEBUG dec_to_bin(trash_size, 0);
 	DEBUG printf (")\n");
 	 
 	printf("\nCompactando %s...\n", file_path);

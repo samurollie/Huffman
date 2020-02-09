@@ -84,7 +84,7 @@ void test_tree(void) {
     CU_ASSERT(tree->frequency == 21);
     CU_ASSERT(tree->item == '*');
 
-    FILE *arq = fopen("test.txt", "w");
+    FILE *arq = fopen("test.txt", "wb");
     print_tree_on_file(arq, tree);
     unsigned char caracter;
     int i;

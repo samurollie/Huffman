@@ -11,7 +11,7 @@ int is_leaf_temp (tree *tree) {
     return (tree->left == NULL && tree->right == NULL);
 }
 
-void the_walking_tree (FILE *compressed_file, FILE *file, tree *mytree, int trash_size) {
+void print_original_file (FILE *compressed_file, FILE *file, tree *mytree, int trash_size) {
     unsigned char unit, current;
     tree* root = mytree;
     fscanf(file, "%c", &unit);
@@ -119,13 +119,13 @@ void decompress () {
     original_file[strlen(file_path) - 5] = '\0';
     printf ("arquivo original: %s\n", original_file);
     
-    FILE *original = fopen(original_file, "w");
+    FILE *original = fopen(original_file, "wb");
     if (original == NULL) {
         printf("Não foi possível descompactar o arquivo.\n");
         return;
     }
 
-    the_walking_tree(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.
+    print_original_file(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.
     fclose(original);
     fclose(arq);
     return;

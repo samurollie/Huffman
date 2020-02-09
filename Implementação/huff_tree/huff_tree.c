@@ -43,18 +43,22 @@ node* join(queue* queue) {
 }
 
 node* build_tree (queue *myqueue) {
-	/* printf("Tamanho da lista (antes de construir): %d\n", myqueue->size);
-	printf("fila: \n");
-	print_queue(myqueue->head);
-	if (myqueue->size == 1) {
-		node* father = create_node(myqueue->head->frequency, '*', myqueue, dequeue(myqueue), NULL);
-		printf("aq\n");
-		enqueue(myqueue, father);
-	} */
+	int i = 0;
 	while(myqueue->size > 1) { 
 		node* father = join(myqueue);
 		enqueue(myqueue, father);
+		i++;
 	}
-	node *huff_tree = myqueue->head;
+	node *huff_tree;
+	if(i == 0) { // tratamento de erro.
+		node *father = NULL;
+		unsigned char id = '*';
+		node* left = myqueue->head;
+		node* right = NULL;
+		father = create_node(myqueue->head->frequency, id, myqueue, left, right);
+		huff_tree = father;
+	} else {
+		huff_tree = myqueue->head;
+	}
 	return huff_tree;
 }

@@ -5,7 +5,7 @@ int contains_key(hash_table *ht, unsigned char key) {
     int h = (int) key;
     hash_node* aux = ht->table[h];
     while (aux != NULL) {
-        if (aux->key == key) return 1; 
+        if (*(unsigned char*) aux->key == key) return 1; 
         aux = aux->next;
     }
     return 0;
@@ -14,7 +14,7 @@ int contains_key(hash_table *ht, unsigned char key) {
 // Imprime uma queuea encadeada;
 void print_linked_queue (hash_node* head) {
     while (head != NULL) {
-        printf ("Chave: %c, Frequencia: %lld ", head->key, head->frequency);
+        printf ("Chave: %c, Frequencia: %lld ", *(unsigned char*) head->key, head->frequency);
         head = head->next;
     }
     printf ("\n");
@@ -36,7 +36,7 @@ void remove_value(hash_table *ht, unsigned char key) {
     hash_node* aux = ht->table[h];
     hash_node* previous = NULL;
     while (aux != NULL) {
-        if (aux->key == key) {
+        if (*(unsigned char*) aux->key == key) {
             if (previous == NULL) {
                 ht->table[h] = aux->next;
             } else {
@@ -56,7 +56,7 @@ int get(hash_table *ht, unsigned char key) {
     int h = (int) key;
     hash_node* aux = ht->table[h];
     while (aux != NULL) {
-        if (aux->key == key) {
+        if (*(unsigned char*) aux->key == key) {
             return aux->frequency;
         }
         aux = aux->next;
@@ -68,7 +68,11 @@ hash_node* add_on_hash(hash_node* head, lli frequency, unsigned char key) {
     hash_node* new_node = (hash_node*) malloc(sizeof(hash_node));
     new_node->next = head;
     new_node->frequency = frequency;
-    new_node->key = key;
+    
+    unsigned char* aux = (unsigned char*) malloc(sizeof(unsigned char));
+    *aux = key;
+    new_node->key = aux;
+    
     memset(new_node->new_mapping, -1, sizeof(new_node->new_mapping));
     return new_node;
 }

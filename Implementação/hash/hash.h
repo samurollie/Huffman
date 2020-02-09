@@ -14,7 +14,7 @@ typedef long long int lli;
 
 struct hash_node {
     hash_node* next;
-    unsigned char key;
+    void* key;
     lli frequency;
     int new_mapping[9];
 };
