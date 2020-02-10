@@ -1,4 +1,3 @@
-// ARQUIVO : huffnode.c
 #include "huff_tree.h"
 
 int is_leaf(node *tree) {

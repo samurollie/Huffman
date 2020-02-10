@@ -1,6 +1,6 @@
 #include "compressor.h"
 
-#define DEBUG if(0)
+#define DEBUG if(1)
 
 void search_huff_tree (node* tree, unsigned char item, int path[], int i, int* found) {
 	if (tree != NULL) {
@@ -45,7 +45,7 @@ void get_number_of_nodes(node* tree, int* size) { // vai contar o numero de nós
 
 int mapping_size(int array[]) {
 	int total = 0;
-	  for(int i = 0; i < 9; i++) {
+	  for(int i = 0; i < 256; i++) {
 		if (array[i] != -1) {
 			total++;
 		}
@@ -58,32 +58,36 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 	unsigned char byte = 0; 
 	int i = 0; 
 
-	while (fscanf (file, "%c", &c) != EOF) { 
+	int biggestMapping = 0; char letter;
+	while (fscanf (file, "%c", &c) != EOF) {
 		int h = (int) c; 
 		int n = mapping_size(mapping->table[h]->new_mapping);
+		if (n > biggestMapping)
+			biggestMapping = n, letter = c;
 	
 		for(int j = 0; j < n; j++) {
-			if (i == 8) { // Completei um byte! :)
-				fprintf(compressed_file, "%c", byte);
-				byte = 0;
-				i = 0;
-			}
-	
 			if (mapping->table[h]->new_mapping[j] == 1) {
 				byte <<= 1;
 				byte = set_bit(byte, 0);
 			} else if (mapping->table[h]->new_mapping[j] == 0) {
 				byte <<= 1;
 			}
-			i++; 
+			i++;
+ 
+			if (i == 8) { // Completei um byte! :)
+				fprintf(compressed_file, "%c", byte);
+				byte = 0;
+				i = 0;
+			}
 		}
 
-		if (i == 8) { // Completei um byte! :)
-			fprintf(compressed_file, "%c", byte);
-			byte = 0;
-			i = 0;
-		}
+		// if (i == 8) { // Completei um byte! :)
+		// 	fprintf(compressed_file, "%c", byte);
+		// 	byte = 0;
+		// 	i = 0;
+		// }
 	}
+	printf("biggestMapping: %d || <%c>\n", biggestMapping, letter);
 	
 	byte <<= trash_size;
 	fprintf(compressed_file, "%c", byte);
@@ -92,8 +96,6 @@ void print_bits(FILE *file, FILE *compressed_file, hash_table *mapping, int tras
 void get_new_mapping(hash_table *mapping, node* huff_tree) {
 	for (int i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
-			int path[9];
-			memset(path, -1, sizeof(path));
 			unsigned char item = *(unsigned char*) mapping->table[i]->key;
 			int found = 0;
 			// printf("i = %d\n", i);
@@ -134,7 +136,7 @@ void print_new_mapping(hash_table *mapping) {
 	for (int  i = 0; i < HASH_SIZE; i++) {
 		if (mapping->table[i] != NULL) {
 			printf("%c = ", *(unsigned char*)mapping->table[i]->key);
-			for (int j = 8; j >= 0; j--) {
+			for (int j = 16; j >= 0; j--) {
 				printf("%d ", mapping->table[i]->new_mapping[j]);
 			}
 			printf("\n");

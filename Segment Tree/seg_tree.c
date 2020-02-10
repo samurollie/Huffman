@@ -96,11 +96,6 @@ SEG_TREE* construct_segtree(int array[], int left, int right)
     return current;   
 }
 
-void create_segtree_from_array(SEG_TREE* st, int array[], int size)
-{
-    st = construct_segtree(array, 0, size - 1);
-}
-
 
 int main()
 {
