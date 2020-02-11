@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_NUMBER 2000
+
 typedef struct node node;
 typedef struct tree tree;
 
 struct node {
-    struct node *next;
+    node *next;
     int item;
 };
 
@@ -64,40 +66,29 @@ node* add_list(node* head, int item) {
     return new_node; 
 }
 
-void list() {
-    node *list = NULL;
-    int number;
-    for(int i = 0; i < 999; i++) {
-        scanf("%d", &number);
-        list = add_list(list, number);
-    }
-    for (int i = 0; i < 999; i++) {
-        int cont = 0;
-        scanf("%d", &number);
-        search_list(list, number, &cont);
-        printf("%d\n", cont);
-    }
-    return;
-}
-
-void binary_tree () {
-    tree* arvore = NULL;
-    int number;
-    for(int i = 0; i < 999; i++) {
-        scanf("%d", &number);
-        arvore = add_tree(arvore, number);
-    }
-    for(int i = 0; i < 999; i++) {
-        int cont = 0;
-        scanf("%d", &number);
-        search_binary_tree(arvore, number, &cont);
-        printf("%d\n", cont);
-    }
-    return;
+int random_numbers() {
+    return rand() % 7777;
 }
 
 int main() {
-    list();
-    binary_tree();   
+    tree* arvore = NULL;
+    node* list = NULL;
+    for (int i = 0; i < MAX_NUMBER; i++) {
+        int n = random_numbers();
+        list = add_list(list, n);
+        arvore = add_tree(arvore, n);
+    }
+    printf ("Número    Lista   Arvore\n");
+    for(int i = 0; i < MAX_NUMBER; i++) {
+        int n = random_numbers();
+
+        int cont_tree = 0;
+        search_binary_tree(arvore, n, &cont_tree);
+
+        int cont_list = 0;
+        search_list(list, n, &cont_list);
+
+        printf ("%d    %d   %d\n", n, cont_list, cont_tree);
+    }
     return 0;
 }

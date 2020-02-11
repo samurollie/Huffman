@@ -5,7 +5,7 @@ out
 compressed.huff
 a.c
 tes
-WIN_20190812_16_09_02_Pro.jpg
+WIN_20190812_16_09_01.9_Pro.jpg
 WIN_20190812_16_09_02_Pro.jpg.huff
 *.huff
 *.out
@@ -17,3 +17,4 @@ huffman
 *.rar
 marcio
 marcioNew
+Comparação/rstudio-xenial-1.1.419-amd64.deb
