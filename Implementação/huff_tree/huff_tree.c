@@ -42,14 +42,16 @@ node* join(queue* queue) {
 }
 
 node* build_tree (queue *myqueue) {
-	int i = 0;
+	int flag = 0;
+	
 	while(myqueue->size > 1) { 
 		node* father = join(myqueue);
 		enqueue(myqueue, father);
-		i++;
+		flag++;
 	}
+
 	node *huff_tree;
-	if(i == 0) { // tratamento de erro.
+	if(flag == 0) {
 		node *father = NULL;
 		unsigned char id = '*';
 		node* left = myqueue->head;

@@ -15,38 +15,31 @@ void print_original_file (FILE *compressed_file, FILE *file, tree *mytree, int t
     unsigned char unit, current;
     tree* root = mytree;
     fscanf(file, "%c", &unit);
+    int n;
     for(;;) {
         if (fscanf(file, "%c", &current) == EOF) {
-            for(int i = 7; i >= trash_size; i--) { // faz até o tamanho do lixo pq não é preciso percorrer o byte inteiro.
-                if (is_leaf_temp(mytree)) {
-                    fprintf (compressed_file, "%c", mytree->item);
-                    mytree = root;
-                    i++;
-                } else if (is_bit_i_set(unit, i) == 0){
-                    mytree = mytree->left;
-                } else {
-                    mytree = mytree->right;
-                }
-            }
-            break;
+            n = trash_size;
         } else {
-            for (int i = 7; i >= 0; i--) { // vai percorrer todo o byte.
-            /* Deve começar do 7 pois o byte foi preenchido da direita para esquerda,
-            mas na hora de ser utilizado, usa-se da esqueda para direita. */
-                if (is_leaf_temp(mytree)) {
-                    fprintf (compressed_file, "%c", mytree->item);
-                    mytree = root; // voltam a arvore do começo.
-                    i++;
-                } else if (is_bit_i_set(unit, i) == 0){ // deve ir para esquerda.
-                    mytree = mytree->left;
-                } else {
-                    mytree = mytree->right;
-                }
+            n = 0;
+        }
+
+        for (int i = 7; i >= n; i--) {
+            if (is_leaf_temp(mytree)) {
+                fprintf (compressed_file, "%c", mytree->item);
+                mytree = root;
+                i++;
+            } else if (is_bit_i_set(unit, i) == 0){
+                mytree = mytree->left;
+            } else {
+                mytree = mytree->right;
             }
         }
+        
         unit = current;
+        if (n == trash_size) 
+            break;
     }
-    fprintf (compressed_file, "%c", mytree->item); // para printar o ultimo item.
+    fprintf (compressed_file, "%c", mytree->item);
 }
 
 tree* create_child (unsigned char item, tree* left, tree* right) {
@@ -83,36 +76,27 @@ void decompress () {
         return;
     }
 
-    unsigned char byte1, byte2; // byte1 = tamanho do lixo // byte2 = tamanho da arvore. 
+    unsigned char byte1, byte2;
     int trash_size = 0, tree_size = 0;
     fscanf(arq, "%c%c", &byte1, &byte2);
     for(int i = 0; i < 16; i++) {
         if (i < 8) {
-            int n = (is_bit_i_set(byte1, 7 - i) != 0) ? 1 : 0; // se o bit estiver setado, n = 1;
-            // printf ("n = %d, i = %d\n", n, 7 - i);
-            if (i < 3) { // apenas os 3 primeiros bites do primeiro byte são destinados ao lixo.
-                trash_size += pow(2, 2 - i) * n; // transforma de binario para decimal.
-            } else { // os outros 5 do primeiro byte e o segundo byte inteiro são para p tamanho da arvore.
+            int n = (is_bit_i_set(byte1, 7 - i) != 0) ? 1 : 0;
+            if (i < 3) {
+                trash_size += pow(2, 2 - i) * n;
+            } else {
                 tree_size += pow(2, 15 - i) * n;
-                /*Deve-se fazer 15-i pois na hora de transformar de binario para decimal as posições 
-                são numeradas ao contrario, logo, o correto dos indices é: 0 1 2  12 11 10 9... */
             }
         } else {
             int n = (is_bit_i_set(byte2, 15 - i) != 0) ? 1 : 0;
-            // printf ("n2 = %d, i = %d\n", n, 15 - i);
             tree_size += pow(2, 15 - i) * n;
         }
     }
-    printf ("Tamanho do lixo: %d Tamanho da arvore: %d\n", trash_size, tree_size);
     
-    printf("Arvore: ");
     tree *huff_tree = NULL;
     huff_tree  = create_tree_from_file(arq, huff_tree);
 
-    print_tree_again(huff_tree);
-    printf("\n"); 
-
-    char original_file[strlen(file_path)]; // serve para retornar ao nome original do arquivo, ou seja, retirar o .huff.
+    char original_file[strlen(file_path)];
     for (int x = 0; x < strlen(file_path); x++) {
         original_file[x] = file_path[x];
     }
@@ -125,7 +109,7 @@ void decompress () {
         return;
     }
 
-    print_original_file(original, arq, huff_tree, trash_size); // percorre a árvore printando o texto original.
+    print_original_file(original, arq, huff_tree, trash_size);
     fclose(original);
     fclose(arq);
     return;

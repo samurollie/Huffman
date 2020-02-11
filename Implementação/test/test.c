@@ -19,8 +19,8 @@ void test_hash(void) {
     }
 
     put(hash, 'A', 6);
-    CU_ASSERT(contains_key(hash, 'A') == 1); // se esse valor já foi adicionado, retorna 1;
-    CU_ASSERT(contains_key(hash, 'B') == 0); //ira retornar zero, pois ainda não foi adicionado.
+    CU_ASSERT(contains_key(hash, 'A') == 1);
+    CU_ASSERT(contains_key(hash, 'B') == 0);
     put(hash, 'B', 5);
     CU_ASSERT(contains_key(hash, 'B') == 1);
     put(hash, 'C', 4);
@@ -64,7 +64,7 @@ void test_hash(void) {
     remove_value(hash, 'A');
     remove_value(hash, 'B');
     remove_value(hash, 'C');
-    CU_ASSERT(get(hash, 'A') == -1); // após removido, essa key não deve ser encontrada.
+    CU_ASSERT(get(hash, 'A') == -1);
     CU_ASSERT(get(hash, 'B') == -1);
     CU_ASSERT(get(hash, 'C') == -1);
 
@@ -128,10 +128,10 @@ void test_tree(void) {
 
 void test_queue(void) {
     queue *queue = create_queue();
-    CU_ASSERT_PTR_NOT_NULL(queue); // verifica se a queue não é NULL.
-    CU_ASSERT(queue->size == 0); // verifica se o tamanho é zero.
+    CU_ASSERT_PTR_NOT_NULL(queue);
+    CU_ASSERT(queue->size == 0);
 
-    add_on_queue(queue, 'A', 6); // nessa função criamos um nó e enfileiramos ordenadamente.
+    add_on_queue(queue, 'A', 6);
     CU_ASSERT(queue->head->item == 'A');
     add_on_queue(queue, 'B', 5);
     CU_ASSERT(queue->head->item == 'B');
@@ -154,22 +154,18 @@ void test_queue(void) {
 }
 
 int main () {
-    CU_pSuite pSuite = NULL; // cria a variavel do tipo CU_pSuite.
-    
-    /* Se essa função não conseguir inicializar, retorna um erro.
-    Caso consiga ela retorna a variavel CUE_SUCCESS. */
+    CU_pSuite pSuite = NULL;
+
     if (CU_initialize_registry() != CUE_SUCCESS) {
         return CU_get_error();
     }
 
-    pSuite = CU_add_suite("Basic_Test_Suite1", init_suite, clean_suite); // cria a suite.
+    pSuite = CU_add_suite("Basic_Test_Suite1", init_suite, clean_suite);
     if (pSuite == NULL) {
         CU_cleanup_registry();
         return CU_get_error();
     }
 
-    /* Se suite fosse uma fila, poderia dizer que a função
-    CU_add_on_queue_test enfileira um caso de teste */
     if((CU_add_test(pSuite, "\n\nTesting Queue Functions...\n\n", test_queue) == NULL)) {
         CU_cleanup_registry();
         return CU_get_error();
@@ -189,6 +185,3 @@ int main () {
     CU_cleanup_registry();
     return CU_get_error();
 }
-
-// Para compilar : make -B test
-// o "-B" força a compilação.

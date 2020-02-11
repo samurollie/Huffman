@@ -10,7 +10,7 @@ void print_queue (node *head) {
 }
 
 node *dequeue(queue *queue) {
-    if (queue->size <= 0) { // Se a fila está vazia
+    if (queue->size <= 0) {
         return NULL;
     } else {
         node* aux = queue->head;

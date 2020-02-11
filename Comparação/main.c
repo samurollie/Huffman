@@ -78,7 +78,7 @@ int main() {
         list = add_list(list, n);
         arvore = add_tree(arvore, n);
     }
-    printf ("Número    Lista   Arvore\n");
+    printf ("Valor    Lista   Arvore\n");
     for(int i = 0; i < MAX_NUMBER; i++) {
         int n = random_numbers();
 

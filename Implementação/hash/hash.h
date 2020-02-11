@@ -34,10 +34,6 @@ void print_linked_queue(hash_node* head);
 /** @param ht: ponteiro para uma hash a ser impressa*/
 void print_hash_table(hash_table *ht);
 
-/** @param  ht: hash table a ser manipulada para remoção*/
-/** @param key: valor a ser removido*/
-void remove_value(hash_table *ht, unsigned char key);
-
 /** @param  ht: hash table a ser manipulada para busca*/
 /** @param key: valor a ser procurado*/
 /** @return retorna a frequência do valor a ser procurado, caso ele exista, e -1 caso contrário */
