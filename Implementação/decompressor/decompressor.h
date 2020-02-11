@@ -15,7 +15,11 @@ struct tree {
     tree * right;
 };
 
+/** @param tree:    raiz da árvore que deseja ser impressa. */
 void print_tree_again(tree* tree);
+
+/** @param tree:    nó que se deseja saber se é ou não uma folha*/
+/** @return:        Se o nó é ou não uma folha */
 int is_leaf_temp (tree *tree);
 
 /** @param compressed_file: arquivo comprimido. */
